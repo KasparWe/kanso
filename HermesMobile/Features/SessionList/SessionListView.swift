@@ -9,7 +9,10 @@ struct SessionListView: View {
 
     @Bindable var authManager: AuthManager
     let server: URL
-    @Binding private var pendingSharedImport: SharedImport?
+    @Binding private var pendingSharedImport: SharedImportReservation?
+    private let didRoutePendingSharedImport: (SharedImportReservation) -> Void
+    private let hasWaitingSharedImport: Bool
+    private let openNextSharedImport: () -> Void
     @Binding private var pendingDeepLinkedSessionID: String?
     @Binding private var requestedNewChat: NewChatRequest?
 
@@ -70,13 +73,19 @@ struct SessionListView: View {
     init(
         authManager: AuthManager,
         server: URL,
-        pendingSharedImport: Binding<SharedImport?> = .constant(nil),
+        pendingSharedImport: Binding<SharedImportReservation?> = .constant(nil),
+        didRoutePendingSharedImport: @escaping (SharedImportReservation) -> Void = { _ in },
+        hasWaitingSharedImport: Bool = false,
+        openNextSharedImport: @escaping () -> Void = {},
         pendingDeepLinkedSessionID: Binding<String?> = .constant(nil),
         requestedNewChat: Binding<NewChatRequest?> = .constant(nil)
     ) {
         self.authManager = authManager
         self.server = server
         _pendingSharedImport = pendingSharedImport
+        self.didRoutePendingSharedImport = didRoutePendingSharedImport
+        self.hasWaitingSharedImport = hasWaitingSharedImport
+        self.openNextSharedImport = openNextSharedImport
         _pendingDeepLinkedSessionID = pendingDeepLinkedSessionID
         _requestedNewChat = requestedNewChat
         _viewModel = State(initialValue: SessionListViewModel(server: server))
@@ -97,6 +106,11 @@ struct SessionListView: View {
 
     var body: some View {
         navigationContainer
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if hasWaitingSharedImport {
+                    waitingSharedImportBanner
+                }
+            }
             .sheet(item: $sessionExportShareItem) { item in
                 SessionExportShareSheet(fileURL: item.fileURL)
                     .presentationDetents([.medium, .large])
@@ -273,6 +287,34 @@ struct SessionListView: View {
                 )
             )
             .focusedSceneValue(\.hermexSceneActions, sceneActions)
+    }
+
+    private var waitingSharedImportBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "square.and.arrow.down")
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Another shared item is waiting")
+                    .font(.subheadline.weight(.semibold))
+                Text("Open it when you are done with this draft.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+
+            Button("Open Next", action: openNextSharedImport)
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.bordered)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(Color(.secondarySystemBackground))
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder
@@ -1134,13 +1176,14 @@ struct SessionListView: View {
     }
 
     private func openPendingSharedImportIfNeeded() {
-        guard let sharedImport = pendingSharedImport else {
+        guard let reservation = pendingSharedImport else {
             return
         }
 
-        pendingSharedImport = nil
+        let sharedImport = reservation.sharedImport
         let draft = HermesShareDraft.composerDraft(from: sharedImport.draft)
         guard !draft.isEmpty || !sharedImport.attachments.isEmpty else {
+            didRoutePendingSharedImport(reservation)
             return
         }
 
@@ -1150,6 +1193,7 @@ struct SessionListView: View {
                 initialAttachments: sharedImport.attachments
             )
         )
+        didRoutePendingSharedImport(reservation)
     }
 
     /// Awaited (not fire-and-forget) so the cold-start `.task` can resolve it before

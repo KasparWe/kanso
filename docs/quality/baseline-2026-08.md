@@ -65,14 +65,47 @@ Per `AGENTS.md`, contribute upstream when the root cause is not app-layer.
   2. **One long message while growing** — the streaming renderer repeatedly reprocesses
      the accumulated string, and the view model repeatedly joins pending token chunks.
      This is #291's focus.
+- **Verified statically on our baseline `b4f26bf`** (2026-08-27, no build — code reading only):
+  - `ChatTranscriptView.swift:208` does use `VStack(spacing: transcriptMessageSpacing)`.
+    Line number and construct match upstream's report exactly. It is the only
+    `VStack(spacing:` in the file and there is no `LazyVStack` anywhere in it.
+  - A partial mitigation is **already present**: the `ForEach` scopes live-streaming
+    state to the anchor row and wraps rows in `.equatable()`, so non-streaming rows are
+    documented as skipping markdown-heavy body re-evaluation on each ~16 ms flush. Any
+    fix must not undo this.
+  - `MarkdownRenderer.swift` is **1336 lines** and holds two layout paths:
+    `MarkdownMathLayoutCache.layout(for:)` at line 54 (cached) and
+    `MarkdownMathLayoutCache.uncachedLayout(for: displayedContent)` at line 121.
+    The second is the streaming path deliberately bypassing the cache — the most likely
+    hot spot.
+  - Upstream confirms #260/#261 (merged `53862c4`) improved only the **settled**
+    markdown path and "deliberately does not cache changing streaming strings," so that
+    work does not address this report.
+  - `StreamingWordDrain.swift` is small (79 lines): `unitCount(in:)`,
+    `splitAtUnitBoundary(_:unitCount:)`, `drainQuota(...)`.
+- **Upstream PR #33 is still OPEN, not merged** (branch
+  `issue/32-transcript-lazy-stack`, title "perf(chat): lazily render transcript rows");
+  issue #32 is also still open. The eager-row half is therefore **not** fixed upstream.
+  Decide deliberately whether to wait for #33, adopt it, or scope this fix to the
+  single-message path only.
 - **Reproduction here:** pending toolchain. Needs a deterministic large-stream fixture
-  plus a physical-device profile before any change — the plan requires profiling to
-  confirm the bottleneck, not assuming the upstream analysis.
-- **Likely files:** `Features/Chat/ChatStreamCoordinator.swift`,
-  `Features/Chat/ChatViewModel.swift`, `Features/Chat/StreamingWordDrain.swift`,
-  `Features/Chat/MarkdownRenderer.swift`, `Features/Chat/ChatTranscriptView.swift`
-- **Notes:** strongest Phase 1 candidate. Upstream's report is specific enough to test
-  against directly, and PR #33 may resolve part 1 — check before duplicating work.
+  plus a physical-device profile before any change. Static confirmation of the construct
+  is **not** confirmation of the bottleneck — the plan requires profiling first.
+- **Files in scope:** `Features/Chat/ChatTranscriptView.swift`,
+  `Features/Chat/MarkdownRenderer.swift`, `Features/Chat/StreamingWordDrain.swift`,
+  `Features/Chat/ChatViewModel.swift`, `Features/Chat/ChatStreamCoordinator.swift`
+- **Upstream constraints a fix must respect** (from #291's Non-goals and Scope):
+  no API or SSE contract changes; no `hermes-webui` changes; no new dependencies; no
+  visual redesign of Markdown or the transcript; no Markdown features removed to improve
+  a benchmark; no reduction of user-visible message page size without product agreement.
+  A fix must **not** silently remove the `.sizeChanges` scroll anchor and must not
+  regress the opening/streaming scroll behavior fixed by #137.
+- **Upstream's prescribed order:** (1) add deterministic pure performance/regression
+  coverage for long streaming Markdown and pending token buffering; (2) measure against
+  plain-Markdown, fenced-code, table, list, math, and tool-heavy fixtures; (3) keep
+  completed blocks and their parsed representation stable while only the active tail
+  changes. Steps 1 and 2 require the toolchain.
+- **Notes:** strongest Phase 1 candidate, and the best-specified issue in this ledger.
 
 ### P0-2 · Live Activity does not reach Completed while backgrounded
 

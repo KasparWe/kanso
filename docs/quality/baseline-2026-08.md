@@ -105,9 +105,10 @@ Per `AGENTS.md`, contribute upstream when the root cause is not app-layer.
   issue #32 is also still open. The eager-row half is therefore **not** fixed upstream.
   Decide deliberately whether to wait for #33, adopt it, or scope this fix to the
   single-message path only.
-- **Reproduction here:** pending toolchain. Needs a deterministic large-stream fixture
-  plus a physical-device profile before any change. Static confirmation of the construct
-  is **not** confirmation of the bottleneck — the plan requires profiling first.
+- **Reproduction here:** not yet attempted. The toolchain now exists, so this is
+  unblocked: it needs a deterministic large-stream fixture plus a physical-device profile
+  before any change. Static confirmation of the construct is **not** confirmation of the
+  bottleneck — profile first.
 - **Files in scope:** `Features/Chat/ChatTranscriptView.swift`,
   `Features/Chat/MarkdownRenderer.swift`, `Features/Chat/StreamingWordDrain.swift`,
   `Features/Chat/ChatViewModel.swift`, `Features/Chat/ChatStreamCoordinator.swift`
@@ -121,7 +122,7 @@ Per `AGENTS.md`, contribute upstream when the root cause is not app-layer.
   coverage for long streaming Markdown and pending token buffering; (2) measure against
   plain-Markdown, fenced-code, table, list, math, and tool-heavy fixtures; (3) keep
   completed blocks and their parsed representation stable while only the active tail
-  changes. Steps 1 and 2 require the toolchain.
+  changes. Steps 1 and 2 are now unblocked.
 - **Notes:** strongest Phase 1 candidate, and the best-specified issue in this ledger.
 
 ### P0-2 · Live Activity does not reach Completed while backgrounded

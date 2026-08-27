@@ -127,6 +127,42 @@ misreporting server state.
 flow, and a hands-free voice turn on a physical iPhone, with correct interruption and
 recovery.
 
+### Candidate: places, routes, and travel planning
+
+Not committed. Captured because it is the owner's strongest live use case — he currently
+uses Gemini for travel planning specifically because of its maps and review grounding.
+
+**Key architectural finding (verified against pinned WebUI `f1d399b4`):** the capability
+needs **no app release and no fork changes**. `_handle_mcp_tools_list` reads
+`cfg.get("mcp_servers", {})`, so MCP servers are Hermes *configuration*. The relevant
+endpoints already exist: `/api/mcp/servers`, `/api/mcp/tools`, `/api/session/toolsets`,
+plus `/api/skills` and `/api/skills/save`.
+
+Staging, deliberately capability-before-UI:
+
+1. **Config only, no app work.** Add a maps MCP server to the Hermes config. Planning
+   works in existing chat, rendered as ordinary tool output. This establishes whether the
+   answers are actually competitive with Gemini *before* any UI investment. Verify the
+   server's real tool names against `/api/mcp/tools` — never assume them.
+2. **Native rendering, only if step 1 proves out.** MapKit place and route cards,
+   Open-in-Maps deep links, CoreLocation for "near me", and a multi-stop itinerary as a
+   durable run with Live Activity progress. Fits `PRODUCT.md`'s "native results, not
+   transcript soup"; multi-step trip planning is a natural fit for the Runs architecture.
+
+Current app-side baseline: **zero** MapKit, CoreLocation, or MCP/toolset surface exists
+across the 193 sources. Step 2 is entirely greenfield.
+
+Constraints to resolve before committing:
+
+- **Review licensing is the binding constraint,** not API access. Google Places terms
+  restrict caching and redisplay of review content and require attribution — this shapes
+  what a native review card may legally show. Apple Maps Server API and OpenStreetMap are
+  cheaper but materially weaker on reviews.
+- Per-request billing, and the API key lives server-side only — never in the app, never
+  in this public repository.
+- MapKit and CoreLocation are first-party Apple frameworks, so step 2 does **not** breach
+  `AGENTS.md` rule 2 on third-party dependencies.
+
 ## Phase 5 — Public self-hoster beta
 
 **Outcome:** another self-hoster can install and understand the app without the owner

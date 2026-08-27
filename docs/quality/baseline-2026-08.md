@@ -5,26 +5,43 @@ into reproducible, prioritized, layer-attributed evidence **before** any fix is 
 
 ## Status of this ledger
 
-**Nothing below has been reproduced on this machine.** As of 2026-08-27 there is no
-Apple toolchain installed here:
+### Automated baseline: GREEN (2026-08-28)
+
+Toolchain installed and the suite runs clean on an unmodified `master`:
 
 ```
-$ xcode-select -p
-/Library/Developer/CommandLineTools
-$ xcodebuild -version
-xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer
-directory '/Library/Developer/CommandLineTools' is a command line tools instance
-$ xcrun simctl list devices available
-xcrun: error: unable to find utility "simctl", not a developer tool or in PATH
+Xcode 26.6 (17F113) · iOS 26.5 simulator runtime (23F77) · iPhone 17, arm64
+
+xcodebuild build-for-testing   → ** TEST BUILD SUCCEEDED **   exit 0, 136s, 0 errors
+xcodebuild test-without-building → result "Passed"            exit 0, 97s
+
+  passedTests  1665
+  failedTests     0
+  skippedTests    2
+  121 distinct test suites
 ```
 
-No simulator runtime exists, no signing identity exists (`security find-identity -v -p
-codesigning` → `0 valid identities found`), and the data volume has 6.3 GB free.
+The 2 skips are `TranscriptMediaPreviewViewModelTests` Photo Library **integration**
+tests (`testSaveVideoFileToPhotoLibraryIntegration`,
+`testInvalidVideoIsRejectedByPhotoLibraryIntegration`) — they need real Photos access a
+simulator cannot provide. Environment skips, not failures.
 
-Every entry is therefore seeded from **upstream reports**, marked `REPORTED` rather than
+Build produced **279 warnings**. That is upstream's inherited baseline, not a regression;
+untouched deliberately.
+
+### The defects below are still NOT reproduced
+
+A green unit suite does **not** reproduce any entry here. Every one is a runtime,
+lifecycle, or performance defect that unit tests do not exercise — which is itself a
+finding: 1665 passing tests coexist with the upstream reports below.
+
+Every entry remains seeded from **upstream reports**, marked `REPORTED` rather than
 `CONFIRMED`. Each must be independently reproduced against the owner's server before it
 is treated as a Kanso defect. Do not fix anything from this ledger while it is still
 `REPORTED` — profile and reproduce first.
+
+Still outstanding before the Phase 0 gate closes: a **signed** simulator install (blocked
+on the owner's Apple Team ID) and the live server smoke.
 
 **Baseline reference:** `master` = `origin/master` = `upstream/master` = `b4f26bf`,
 zero divergence. WebUI pins: tested `f1d399b4`, triaged `4b390e11`.

@@ -1,4 +1,4 @@
-# Contributing to Hermex
+# Contributing to Kanso
 
 Thanks for your interest in contributing! This document covers local setup,
 running tests, code signing for contributors, and the PR workflow. Please also
@@ -43,8 +43,8 @@ team** — override locally instead:
    DEVELOPMENT_TEAM = YOUR_TEAM_ID
    // Optional — only needed if provisioning complains about the bundle ID.
    // The app-group entitlement must stay in sync with the bundle ID.
-   // APP_BUNDLE_IDENTIFIER = com.yourname.hermex
-   // APP_GROUP_IDENTIFIER = group.com.yourname.hermex
+   // APP_BUNDLE_IDENTIFIER = com.yourname.kanso
+   // APP_GROUP_IDENTIFIER = group.com.yourname.kanso
    ```
 
 2. Build normally. `Config/Shared.xcconfig` is wired into the project and ends
@@ -70,7 +70,7 @@ independently useful, it deserves its own PR.
 
 ## App bug or server bug?
 
-Hermex is a thin client over [hermes-webui](https://github.com/nesquena/hermes-webui),
+Kanso is a thin client over [hermes-webui](https://github.com/nesquena/hermes-webui),
 so a fair share of apparent app bugs are really server bugs. Before filing a
 bug here, reproduce it in the hermes-webui **web UI** against the same server:
 

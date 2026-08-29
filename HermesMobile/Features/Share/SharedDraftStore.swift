@@ -85,7 +85,7 @@ enum HermesShareDraft {
 
     static var urlScheme: String {
         Bundle.main.object(forInfoDictionaryKey: "HermesURLScheme") as? String
-            ?? "hermes-agent"
+            ?? "kanso"
     }
 
     static let shareURLHost = "share"

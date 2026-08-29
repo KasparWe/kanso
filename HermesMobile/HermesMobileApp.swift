@@ -1,24 +1,24 @@
 import SwiftUI
 import SwiftData
 
-struct HermexSceneActions {
+struct KansoSceneActions {
     let canCreateNewChat: Bool
     let createNewChat: () -> Void
     let searchSessions: () -> Void
 }
 
-private struct HermexSceneActionsKey: FocusedValueKey {
-    typealias Value = HermexSceneActions
+private struct KansoSceneActionsKey: FocusedValueKey {
+    typealias Value = KansoSceneActions
 }
 
 extension FocusedValues {
-    var hermexSceneActions: HermexSceneActions? {
-        get { self[HermexSceneActionsKey.self] }
-        set { self[HermexSceneActionsKey.self] = newValue }
+    var hermexSceneActions: KansoSceneActions? {
+        get { self[KansoSceneActionsKey.self] }
+        set { self[KansoSceneActionsKey.self] = newValue }
     }
 }
 
-struct HermexCommands: Commands {
+struct KansoCommands: Commands {
     @FocusedValue(\.hermexSceneActions) private var actions
 
     var body: some Commands {
@@ -66,7 +66,7 @@ struct HermesMobileApp: App {
         }
         .modelContainer(for: [CachedSession.self, CachedMessage.self])
         .commands {
-            HermexCommands()
+            KansoCommands()
             SidebarCommands()
         }
     }

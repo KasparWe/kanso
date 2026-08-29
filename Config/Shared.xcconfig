@@ -1,14 +1,14 @@
 // Shared app-identity and signing defaults, attached to the project as the
 // base configuration for both build configurations (Debug and Release).
 //
-// Contributors: never edit this file or project.pbxproj to sign with your own
-// Apple team. Create Config/Local.xcconfig (gitignored) instead — see
-// CONTRIBUTING.md ("Code signing for contributors").
+// This is the Kanso fork's own app identity: team and bundle IDs belong to the
+// fork owner (Apple team H55GUGZRDX). Per-machine overrides still go in
+// Config/Local.xcconfig (gitignored) — see CONTRIBUTING.md.
 
-DEVELOPMENT_TEAM = 6GYD9C9N6R
+DEVELOPMENT_TEAM = H55GUGZRDX
 APP_IDENTIFIER_SUFFIX =
-APP_BUNDLE_IDENTIFIER = com.uzairansar.hermesmobile$(APP_IDENTIFIER_SUFFIX)
-APP_GROUP_IDENTIFIER = group.com.uzairansar.hermesmobile$(APP_IDENTIFIER_SUFFIX)
+APP_BUNDLE_IDENTIFIER = app.kanso$(APP_IDENTIFIER_SUFFIX)
+APP_GROUP_IDENTIFIER = group.app.kanso$(APP_IDENTIFIER_SUFFIX)
 
 // Optional per-machine overrides. This include must stay last: later
 // assignments win, so Local.xcconfig values override the defaults above.

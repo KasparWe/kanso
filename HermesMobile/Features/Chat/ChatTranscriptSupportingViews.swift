@@ -605,7 +605,7 @@ struct AssistantTypingIndicatorView: View {
             .opacity(reduceMotion ? 0.75 : (isBreathing ? 0.95 : 0.55))
             .padding(.leading, 4)
             .padding(.vertical, 8)
-            .accessibilityLabel("Hermex is preparing a response")
+            .accessibilityLabel("Kanso is preparing a response")
             .onAppear {
                 updateBreathingAnimation()
             }

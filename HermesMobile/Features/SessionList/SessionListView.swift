@@ -990,8 +990,8 @@ struct SessionListView: View {
         searchFieldIsFocused = true
     }
 
-    private var sceneActions: HermexSceneActions {
-        HermexSceneActions(
+    private var sceneActions: KansoSceneActions {
+        KansoSceneActions(
             canCreateNewChat: !viewModel.isViewingCachedData && !navigationState.isCreatingNewChat,
             createNewChat: openNewChatFromKeyboard,
             searchSessions: openSearchFromKeyboard
@@ -1548,7 +1548,7 @@ private struct PendingNewChatView: View {
 
     private var pendingComposer: some View {
         HStack(alignment: .bottom, spacing: 10) {
-            TextField("Message Hermex", text: persistedDraftBinding, axis: .vertical)
+            TextField("Message Kanso", text: persistedDraftBinding, axis: .vertical)
                 .textFieldStyle(.plain)
                 .lineLimit(1...5)
                 .focused($composerIsFocused)

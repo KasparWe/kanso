@@ -182,14 +182,47 @@ tests could catch this class of defect, which is why the bug survived.
 
 ### P0-2 · Live Activity does not reach Completed while backgrounded
 
-- **Verdict:** `REPORTED` — upstream [#290](https://github.com/uzairansaruzi/hermex/issues/290)
-- **Layer:** App (suspected), possibly WebUI delivery timing
+- **Verdict:** `NOT FIXABLE APP-SIDE` — reclassified 2026-08-29 from a Phase 1 bug to a
+  **Phase 2 push dependency**. Upstream [#290](https://github.com/uzairansaruzi/hermex/issues/290)
+- **Layer:** neither App nor WebUI — a missing **capability** (ActivityKit push).
 - **Expected:** a run that finishes while the app is backgrounded updates its Live
   Activity to Completed.
 - **Observed (upstream):** the Live Activity can remain stale in the background.
-- **Impact:** directly contradicts Product Principle 2 — the lock screen would assert a
-  run is still going when it is not. Blocks Phase 2's notification gate.
-- **Reproduction here:** pending; requires a physical device, not a simulator.
+
+#### Why no app-side fix exists
+
+Verified by code reading on our baseline:
+
+- `AgentLiveActivityManager.swift:354` requests the activity with **`pushType: nil`**, so
+  ActivityKit cannot deliver updates from outside the app. Nothing external can move the
+  activity to Completed.
+- While iOS has the app suspended, the SSE connection is dead and no app code runs, so
+  the terminal `done` event that calls `end(status:activity:errorSummary:)` never arrives.
+- `end(...)` itself is correct: it cancels the pending throttled update, applies the final
+  state, and `endActivity` calls `update(finalState)` *before* its 600 ms completion sleep,
+  so the final content lands even if the sleep is cut short.
+- Foreground reconciliation already exists and is wired up — `ContentView.swift:37` runs
+  `reconcileOrphanedLiveActivities` on `scenePhase == .active` and on appear, via
+  `LiveActivityReconciler`, with broad coverage in `LiveActivityTests.swift`. An initial
+  hypothesis that this was dead code was **wrong**; it is live and tested.
+- The stale window is a deliberate upstream tradeoff (#246):
+  `staleDate(for:)` at `AgentLiveActivityManager.swift:471` returns
+  `Date() + 300s` while running and `+ 90s` once already stale, specifically so a
+  suspended run is not dimmed within seconds. That choice directly widens the window in
+  which #290's symptom is visible — the two issues are in tension, not independent.
+
+#### The actual fix
+
+`pushType: .token`, plus a server that sends ActivityKit push updates over APNs — i.e.
+the Phase 2 Mobile Bridge. Until then the honest behaviour is what ships today: the
+activity looks current for up to 5 minutes, then dims, and is corrected on next
+foreground.
+
+**Do not attempt a Phase 1 patch here.** Options short of push (a `BGProcessingTask` wake,
+or shortening the stale window) either cannot be relied on or regress #246.
+
+- **Consequence for ROADMAP:** Phase 2's notification gate should explicitly include
+  ending a Live Activity via push, not only delivering a notification.
 
 ### P0-3 · Auto-generated session title appears as extra assistant text
 

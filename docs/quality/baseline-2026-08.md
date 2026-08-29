@@ -29,19 +29,28 @@ simulator cannot provide. Environment skips, not failures.
 Build produced **279 warnings**. That is upstream's inherited baseline, not a regression;
 untouched deliberately.
 
-### The defects below are still NOT reproduced
+### Progress
 
-A green unit suite does **not** reproduce any entry here. Every one is a runtime,
-lifecycle, or performance defect that unit tests do not exercise — which is itself a
-finding: 1665 passing tests coexist with the upstream reports below.
+| Entry | Verdict |
+|---|---|
+| P0-1 · long-stream unresponsiveness | **FIXED** — reproduced by measurement, fixed, regression test added |
+| P0-2 · stale Live Activity | `REPORTED` |
+| P0-3 · title leaks into transcript | `REPORTED` |
+| P0-4 · Kanban board reset | `REPORTED` |
+| P0-5 · stale auth after URL/header edit | `REPORTED` |
+| P1-1 · dictation 60 s cutoff | `REPORTED` |
+| P1-2 · unbounded draft attachments | `REPORTED` |
 
-Every entry remains seeded from **upstream reports**, marked `REPORTED` rather than
-`CONFIRMED`. Each must be independently reproduced against the owner's server before it
-is treated as a Kanso defect. Do not fix anything from this ledger while it is still
-`REPORTED` — profile and reproduce first.
+The remaining `REPORTED` entries are **not reproduced**. A green unit suite does not
+reproduce them: each is a runtime, lifecycle, or performance defect the unit tests never
+exercise — which was itself the finding, since 1665 passing tests coexisted with all of
+them. Do not fix a `REPORTED` entry before reproducing it.
 
-Still outstanding before the Phase 0 gate closes: a **signed** simulator install (blocked
-on the owner's Apple Team ID) and the live server smoke.
+Suite is now **1668 passed / 0 failed / 2 skipped** (three tests added by the P0-1 fix).
+
+Phase 0 gate: the signed simulator install is **done** (Team ID `H55GUGZRDX`, app installs
+and launches as `app.kanso`). Only the **live server smoke** remains, which needs the
+owner's cookie jar.
 
 **Baseline reference:** `master` = `origin/master` = `upstream/master` = `b4f26bf`,
 zero divergence. WebUI pins: tested `f1d399b4`, triaged `4b390e11`.
@@ -147,10 +156,9 @@ tests could catch this class of defect, which is why the bug survived.
   issue #32 is also still open. The eager-row half is therefore **not** fixed upstream.
   Decide deliberately whether to wait for #33, adopt it, or scope this fix to the
   single-message path only.
-- **Reproduction here:** not yet attempted. The toolchain now exists, so this is
-  unblocked: it needs a deterministic large-stream fixture plus a physical-device profile
-  before any change. Static confirmation of the construct is **not** confirmation of the
-  bottleneck — profile first.
+- **Reproduction here:** DONE by measurement — see the table above. A physical-device
+  profile is still worth doing for the *rendering* half (#32/#33), which these tests do
+  not cover.
 - **Files in scope:** `Features/Chat/ChatTranscriptView.swift`,
   `Features/Chat/MarkdownRenderer.swift`, `Features/Chat/StreamingWordDrain.swift`,
   `Features/Chat/ChatViewModel.swift`, `Features/Chat/ChatStreamCoordinator.swift`

@@ -4288,10 +4288,9 @@ final class ChatViewModel {
         // Same append-time dedup contract as appendAssistantToken: return true iff
         // the event contributed new content, mutate only via the coalesced flush.
         _ = ensureStreamingAssistantMessage()
-        let effectiveContent = liveReasoningText + pendingReasoningChunks.joined()
         let remainder = deduplicatedReplayText(
             text,
-            existingContent: effectiveContent,
+            existingContent: liveReasoningText + pendingReasoningChunks.joined(),
             matchedPrefixLength: &activeStreamReplayMatchedReasoningLength
         )
         guard !remainder.isEmpty else { return false }
@@ -4450,10 +4449,16 @@ final class ChatViewModel {
         // Dedup at append time against effective content (flushed + pending) so the
         // return value stays a synchronous progress signal for the reconnect watchdog
         // while transcript mutation stays batched behind the coalesced flush.
+        //
+        // The effective-content expression is passed unevaluated: on a normal stream
+        // dedup never reads it, so building it per token would make appending a long
+        // response O(n²) in its length (issue #291).
         let messageID = ensureStreamingAssistantMessage()
-        let flushedContent = messages.first(where: { $0.messageId == messageID })?.content ?? ""
-        let effectiveContent = flushedContent + pendingAssistantTokenChunks.joined()
-        let remainder = deduplicatedReplayToken(token, existingContent: effectiveContent)
+        let remainder = deduplicatedReplayToken(
+            token,
+            existingContent: (messages.first(where: { $0.messageId == messageID })?.content ?? "")
+                + pendingAssistantTokenChunks.joined()
+        )
         guard !remainder.isEmpty else { return false }
 
         pendingAssistantTokenChunks.append(remainder)
@@ -4519,8 +4524,19 @@ final class ChatViewModel {
         return true
     }
 
-    private func deduplicatedReplayToken(_ token: String, existingContent: String) -> String {
-        guard isActiveStreamReplayConnection, !existingContent.isEmpty else {
+    /// `existingContent` is an autoclosure on purpose (issue #291). Replay dedup is
+    /// inert unless this is a replay connection, but callers build the accumulated
+    /// message to pass in — an O(accumulated length) copy. Evaluating lazily keeps the
+    /// per-token append path O(1) on normal streams, where the value is never needed.
+    /// The guard is split rather than combined so `resetActiveStreamReplayTokenState()`
+    /// still runs on both early-return paths exactly as before.
+    private func deduplicatedReplayToken(_ token: String, existingContent: @autoclosure () -> String) -> String {
+        guard isActiveStreamReplayConnection else {
+            resetActiveStreamReplayTokenState()
+            return token
+        }
+        let existingContent = existingContent()
+        guard !existingContent.isEmpty else {
             resetActiveStreamReplayTokenState()
             return token
         }
@@ -4569,12 +4585,18 @@ final class ChatViewModel {
         return token
     }
 
+    /// See `deduplicatedReplayToken` — `existingContent` is lazy for the same reason.
     private func deduplicatedReplayText(
         _ text: String,
-        existingContent: String,
+        existingContent: @autoclosure () -> String,
         matchedPrefixLength: inout Int
     ) -> String {
-        guard isActiveStreamReplayConnection, !existingContent.isEmpty else {
+        guard isActiveStreamReplayConnection else {
+            matchedPrefixLength = 0
+            return text
+        }
+        let existingContent = existingContent()
+        guard !existingContent.isEmpty else {
             matchedPrefixLength = 0
             return text
         }

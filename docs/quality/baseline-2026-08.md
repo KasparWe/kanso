@@ -66,7 +66,49 @@ Per `AGENTS.md`, contribute upstream when the root cause is not app-layer.
 
 ### P0-1 · Long streaming assistant messages make the app unresponsive
 
-- **Verdict:** `REPORTED` — upstream [#291](https://github.com/uzairansaruzi/hermex/issues/291)
+- **Verdict:** `FIXED` (2026-08-29, commit `472f879`) for the single-long-message half.
+  The eager-transcript-rows half stays open upstream as #32 / PR #33.
+- **Confirmed then fixed.** Upstream issue: [#291](https://github.com/uzairansaruzi/hermex/issues/291)
+
+#### Measured root cause
+
+`appendAssistantToken` ran **once per token** and eagerly built
+`flushedContent + pendingAssistantTokenChunks.joined()` to pass to
+`deduplicatedReplayToken` as a replay-dedup precheck. That callee returns immediately
+unless `isActiveStreamReplayConnection` is true — so on every **normal** stream the app
+copied the entire accumulated message per token, on the main actor, then discarded it.
+`appendReasoning` had the identical defect via `deduplicatedReplayText`.
+
+Measured on iPhone 17 / iOS 26.5 before the fix:
+
+| Path | 4 000 tokens | 8 000 tokens | Ratio |
+|---|---|---|---|
+| Assistant | 120.2 ms | 483.7 ms | **4.02x** |
+| Reasoning | 130.7 ms | 448.8 ms | **3.43x** |
+
+2.0 is linear, 4.0 is quadratic. After the fix the assistant test runs in 0.027 s
+(from 1.428 s) and the reasoning test in 0.059 s (from 0.615 s).
+
+#### Fix
+
+Both `existingContent` parameters became `@autoclosure`, so the expression is evaluated
+only when a replay connection needs it. The guards were **split** rather than combined,
+because `resetActiveStreamReplayTokenState()` and `matchedPrefixLength = 0` are real
+side effects on the early-return paths, not just exits.
+
+#### Process note worth keeping
+
+The first version of the test **passed against the broken code** — an absolute 500 ms
+budget, while the quadratic path takes only ~450 ms for 8 k tokens on an M-series Mac.
+Had the fix been written first, that green test would have "confirmed" it while being
+incapable of ever catching a regression. The test now asserts a **scaling ratio**, which
+is machine-independent: slower hardware inflates both measurements equally.
+
+These are the repository's **first performance tests**. Nothing in the 1665 existing
+tests could catch this class of defect, which is why the bug survived.
+
+- **Superseded original analysis** — kept because it shows how upstream's own framing
+  differed from the measured cause:
 - **Layer:** App
 - **Expected:** a long streaming response stays scrollable and responsive; render work
   per token is bounded.
@@ -123,7 +165,12 @@ Per `AGENTS.md`, contribute upstream when the root cause is not app-layer.
   plain-Markdown, fenced-code, table, list, math, and tool-heavy fixtures; (3) keep
   completed blocks and their parsed representation stable while only the active tail
   changes. Steps 1 and 2 are now unblocked.
-- **Notes:** strongest Phase 1 candidate, and the best-specified issue in this ledger.
+- **Notes:** upstream #291's summary emphasises the Markdown renderer reprocessing the
+  accumulated string and the view model joining pending chunks in the *drain tick*. The
+  measured dominant cost was neither: it was the **dedup precheck in the append path**.
+  `drainStreamingContentTick`'s `unitCount(in: pendingAssistantTokenChunks.joined())`
+  operates on the bounded pending buffer, so it is not the quadratic term. Worth
+  reporting back upstream.
 
 ### P0-2 · Live Activity does not reach Completed while backgrounded
 

@@ -226,14 +226,39 @@ or shortening the stale window) either cannot be relied on or regress #246.
 
 ### P0-3 · Auto-generated session title appears as extra assistant text
 
-- **Verdict:** `REPORTED` — upstream [#288](https://github.com/uzairansaruzi/hermex/issues/288)
-- **Layer:** App or WebUI — **attribution required before fixing.** If the title arrives
-  on the same stream channel as assistant content, the root cause is server-side and
-  belongs upstream.
+- **Verdict:** `NOT APP-LAYER` (attributed 2026-08-29) — upstream [#288](https://github.com/uzairansaruzi/hermex/issues/288)
+- **Layer:** **Agent** (or server-side message storage) — *not* App, *not* WebUI.
 - **Expected:** the generated title updates the session title only.
 - **Observed (upstream):** the title also renders as assistant transcript text after a
   response.
-- **Reproduction here:** pending.
+
+#### Attribution evidence
+
+- **App handling is correct.** `SSEClient.swift:254` parses a *distinct* `"title"` SSE
+  event into `.title(TitleStreamEvent)`. `ChatStreamCoordinator.swift:471` routes it to
+  `streamCoordinatorUpdateTitle(payload)` only — it is never appended to message content.
+  (`ChatViewModel.swift:2504` also matches `case .title` but is the unrelated `/title`
+  slash command.)
+- **WebUI does not author the event vocabulary.** `_handle_sse_stream`
+  (`api/routes.py:5997`, pinned `f1d399b4`) is a pass-through: it pulls `(event, data)`
+  off a subscriber queue and forwards each one via `_sse_with_id`. There is no title
+  emission in the streaming path.
+- The only title generation found in webui is `title_from(s.messages, s.title)` at
+  `api/routes.py:8076`, on the **non-streaming** `/api/chat` path. It derives a title from
+  existing messages rather than making a model call, so it cannot emit tokens.
+
+Therefore the title text reaching the transcript as assistant content must originate
+either (a) upstream of webui, in whatever publishes to the stream queue — the Hermes
+Agent, whose source is not available locally — or (b) in the server's stored `messages`,
+which the app would then render faithfully after its post-`done` transcript reload.
+
+#### What is needed to finish this
+
+Live reproduction against the owner's server, capturing the raw SSE frames, to
+distinguish (a) from (b). **Blocked on the smoke-test cookie jar.** Per `AGENTS.md`, if
+confirmed non-app-layer this should be reported upstream rather than patched here. A
+defensive app-side filter is possible but would mask a server defect, so it should not be
+written before attribution is complete.
 
 ### P0-4 · Kanban silently resets the locally browsed Board after relaunch
 

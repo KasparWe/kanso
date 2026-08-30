@@ -34,14 +34,14 @@ untouched deliberately.
 | Entry | Verdict |
 |---|---|
 | P0-1 · long-stream unresponsiveness | **FIXED** — reproduced by measurement, fixed, regression test added |
-| P0-2 · stale Live Activity | `REPORTED` |
-| P0-3 · title leaks into transcript | `REPORTED` |
+| P0-2 · stale Live Activity | **NOT FIXABLE APP-SIDE** — Phase 2 push dependency |
+| P0-3 · title leaks into transcript | **NOT APP-LAYER** — Agent; needs live SSE capture |
 | P0-4 · Kanban board reset | `REPORTED` |
 | P0-5 · stale auth after URL/header edit | `REPORTED` |
 | P1-1 · dictation 60 s cutoff | `REPORTED` |
 | P1-2 · unbounded draft attachments | `REPORTED` |
 
-The remaining `REPORTED` entries are **not reproduced**. A green unit suite does not
+P0-5, P1-1 and P1-2 remain `REPORTED` and are **not reproduced**. A green unit suite does not
 reproduce them: each is a runtime, lifecycle, or performance defect the unit tests never
 exercise — which was itself the finding, since 1665 passing tests coexisted with all of
 them. Do not fix a `REPORTED` entry before reproducing it.

@@ -3,6 +3,28 @@ import XCTest
 
 @MainActor
 final class KanbanFeatureStateTests: XCTestCase {
+    /// Board selection now persists per server (issue #259), and most tests here
+    /// share one server URL — so without this, one test's selection leaks into the
+    /// next test's `load()`. Clear every persisted selection before and after each
+    /// test so the suite stays order-independent.
+    override func setUp() {
+        super.setUp()
+        clearAllPersistedBoardSelections()
+    }
+
+    override func tearDown() {
+        clearAllPersistedBoardSelections()
+        super.tearDown()
+    }
+
+    private func clearAllPersistedBoardSelections() {
+        let defaults = UserDefaults.standard
+        for key in defaults.dictionaryRepresentation().keys
+        where key.hasPrefix(KanbanBoardSelectionStore.storageKeyPrefix) {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     func testCompatibleHandshakeIsOrderedAndBoundToItsServer() async {
         let client = KanbanClientStub()
         let firstServer = URL(string: "https://first.example.test")!
@@ -25,6 +47,53 @@ final class KanbanFeatureStateTests: XCTestCase {
             .assignees("main")
         ])
     }
+
+    /// Issue #259: the locally browsed Board must survive relaunch, and must not
+    /// leak across servers. Board selection is browse-only state that never
+    /// changes the server's active Board (PROJECT_SPEC), so it has to be
+    /// remembered locally and scoped per server like every other per-server
+    /// preference (see docs/agents/multi-server-state-isolation.md).
+    func testSelectedBoardSurvivesRelaunchAndStaysScopedToItsServer() async {
+        let server = URL(string: "https://relaunch.example.test")!
+        let otherServer = URL(string: "https://other-relaunch.example.test")!
+        // multiBoards, not the default fixture: the default has only "main", and
+        // selectBoard() rejects a slug that is not in `boards`.
+        let stub = { KanbanClientStub(boardsResult: .success(KanbanFixtures.multiBoards)) }
+
+        let before = KanbanFeatureState(server: server, client: stub())
+        await before.load()
+        XCTAssertEqual(before.selectedBoardSlug, "main", "fixture default board")
+
+        await before.selectBoard("release")
+        XCTAssertEqual(before.selectedBoardSlug, "release")
+        // Isolate write vs read: prove the store actually persisted before blaming load().
+        XCTAssertEqual(
+            KanbanBoardSelectionStore.selectedBoard(for: server),
+            "release",
+            "selectBoard must persist the slug"
+        )
+
+        // A fresh state for the same server stands in for an app relaunch: the
+        // previous instance's in-memory selection is gone.
+        let afterRelaunch = KanbanFeatureState(server: server, client: stub())
+        await afterRelaunch.load()
+        XCTAssertEqual(
+            afterRelaunch.selectedBoardSlug,
+            "release",
+            "relaunch must restore the browsed Board, not silently fall back to the server's active Board"
+        )
+
+        // A different server must not inherit the first server's selection.
+        let different = KanbanFeatureState(server: otherServer, client: stub())
+        await different.load()
+        XCTAssertEqual(
+            different.selectedBoardSlug,
+            "main",
+            "board selection must not leak across servers"
+        )
+    }
+
+
 
     func testCommentCapabilityUsesEnvelopePermissionAndHonorsExplicitBoardReadOnly() async {
         let writable = KanbanFeatureState(

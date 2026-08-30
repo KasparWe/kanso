@@ -300,9 +300,14 @@ struct KanbanLiveUpdateTiming: Sendable {
     )
 }
 
-/// Server-bound, transient Kanban browsing state. Each instance owns one
-/// server's Board choice, filters, selection, and snapshots; nothing is shared
-/// across servers or persisted by this slice.
+/// Server-bound Kanban browsing state. Each instance owns one server's Board
+/// choice, filters, selection, and snapshots; nothing is shared across servers.
+///
+/// One thing *is* persisted: the browsed Board slug, via
+/// `KanbanBoardSelectionStore`, scoped per server (issue #259). Board selection is
+/// local-only by contract — it never changes the server's active Board — so
+/// without local persistence a relaunch silently fell back to the server's active
+/// Board. Everything else here stays transient.
 @MainActor
 @Observable
 final class KanbanFeatureState {
@@ -855,7 +860,12 @@ final class KanbanFeatureState {
     }
 
     func load() async {
+        // On a fresh launch the in-memory slug is nil, so fall back to the Board
+        // this server was last browsing (#259). A persisted slug that no longer
+        // exists flows through the same `handleRemovedBoard` path as a Board removed
+        // mid-session, so a stale value degrades identically rather than specially.
         let previouslySelectedBoard = normalizedOptional(selectedBoardSlug)
+            ?? normalizedOptional(KanbanBoardSelectionStore.selectedBoard(for: server))
         let previouslySelectedBoardName = selectedBoard?.name
         invalidateBoardMutation()
         invalidateDispatch()
@@ -931,6 +941,7 @@ final class KanbanFeatureState {
             self.boardsResponse = boardsResponse
             boards = availableBoards
             selectedBoardSlug = boardToLoad
+            KanbanBoardSelectionStore.setSelectedBoard(boardToLoad, for: server)
             boardSelectionNotice = nil
             self.snapshot = snapshot
             markBoardActivity()
@@ -1014,6 +1025,7 @@ final class KanbanFeatureState {
         clearSettledMutationPresentation()
         resetLiveUpdates(clearCursor: true)
         selectedBoardSlug = slug
+        KanbanBoardSelectionStore.setSelectedBoard(slug, for: server)
         boardSelectionNotice = nil
         snapshot = nil
         stats = nil

@@ -3,6 +3,28 @@ import XCTest
 
 @MainActor
 final class KanbanLiveUpdateTests: XCTestCase {
+    /// Board selection now persists per server (issue #259), and most tests here
+    /// share one server URL — so without this, one test's selection leaks into the
+    /// next test's `load()`. Clear every persisted selection before and after each
+    /// test so the suite stays order-independent.
+    override func setUp() {
+        super.setUp()
+        clearAllPersistedBoardSelections()
+    }
+
+    override func tearDown() {
+        clearAllPersistedBoardSelections()
+        super.tearDown()
+    }
+
+    private func clearAllPersistedBoardSelections() {
+        let defaults = UserDefaults.standard
+        for key in defaults.dictionaryRepresentation().keys
+        where key.hasPrefix(KanbanBoardSelectionStore.storageKeyPrefix) {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     func testVisibleBoardStartsAtSnapshotCursorAndCoalescesEventBurst() async throws {
         let client = LiveKanbanClient(boardResults: [.success(.rich), .success(.newer)])
         let stream = KanbanStreamSpy()

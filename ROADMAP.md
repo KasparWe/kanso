@@ -79,8 +79,25 @@ duplicate sends, no transcript corruption, and no unrecoverable stuck state.
 
 - Home: Now header plus recent conversations.
 - Work shell: Runs, Board, Schedules segments.
-- Runs view built from existing session and background state; waiting/failed/completed
-  reported truthfully.
+- Runs view built from existing session and background state.
+
+  **Verified capability boundary** (against pinned WebUI `f1d399b4`) — only these run
+  states can be substantiated, so only these may be shown:
+
+  | State | Source | Substantiable |
+  |---|---|---|
+  | Running | `/api/sessions` → `is_streaming` | yes — `all_sessions()` passes `include_runtime=True` and `_is_streaming_session` tests `active_stream_id in active_stream_ids`, so it is a live check, not a stale flag |
+  | Waiting for you | `/api/approval/pending`, `/api/clarify/pending` | yes, but a separate call — not on a session row |
+  | Recently active | `is_streaming == false` + `last_message_at` | yes, as *recent activity* |
+  | **Failed** | — | **no** |
+
+  `Session.compact()` emits no error or failure field, so **Runs cannot report failure**.
+  An earlier version of this line promised "waiting/failed/completed reported truthfully";
+  that was not achievable and has been corrected. "Completed" is likewise avoided: we know
+  a stream ended, not that it succeeded.
+
+  Surfacing failure needs either a new upstream field or per-session status polling
+  (`/api/session/status` does carry `error`) — decide deliberately, do not infer it.
 - Schedules UX over the existing cron API: grouped list, simple editor, detail, history,
   Run Now, Pause/Resume, error acknowledgement, output and session links.
 - Mobile Bridge ADR, then a minimal plugin plus service.

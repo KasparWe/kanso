@@ -46,7 +46,7 @@ reproduce them: each is a runtime, lifecycle, or performance defect the unit tes
 exercise — which was itself the finding, since 1665 passing tests coexisted with all of
 them. Do not fix a `REPORTED` entry before reproducing it.
 
-Suite is now **1668 passed / 0 failed / 2 skipped** (three tests added by the P0-1 fix).
+Suite is now **1669 passed / 0 failed / 2 skipped** (three tests from P0-1, one from P0-4).
 
 Phase 0 gate: the signed simulator install is **done** (Team ID `H55GUGZRDX`, app installs
 and launches as `app.kanso`). Only the **live server smoke** remains, which needs the
@@ -262,8 +262,37 @@ written before attribution is complete.
 
 ### P0-4 · Kanban silently resets the locally browsed Board after relaunch
 
-- **Verdict:** `REPORTED` — upstream [#259](https://github.com/uzairansaruzi/hermex/issues/259)
+- **Verdict:** `FIXED` (2026-08-30, commit `f12f368`) — upstream [#259](https://github.com/uzairansaruzi/hermex/issues/259)
 - **Layer:** App
+
+#### Root cause
+
+`selectedBoardSlug` had **no persistence anywhere in the Kanban feature** — no
+`UserDefaults`, no `@AppStorage`, no SwiftData. `load()` read
+`previouslySelectedBoard` from that same in-memory value, so after relaunch it was
+`nil` and `previouslySelectedBoard ?? currentBoard` fell back to the server's active
+Board.
+
+#### Fix
+
+New `KanbanBoardSelectionStore` persists the slug per server, keyed by absolute URL,
+mirroring `SessionRowDisplaySettings.showCliSessionsKey(for:)`. Persisted at the two
+genuine selection points only — **not** at the `selectedBoardSlug = nil` inside the broad
+teardown, since a reset must not forget the user's choice.
+
+#### Two mistakes worth remembering
+
+1. The first test selected `"release"` against the default `KanbanFixtures.boards`, which
+   holds only `"main"`. `selectBoard()` rejects a slug absent from `boards`, so the call
+   was a **no-op and the test never exercised the fix**. Use `KanbanFixtures.multiBoards`.
+2. Persisting inside `load()` made the existing Kanban suites **order-dependent** — most
+   share `https://example.test`, so one test's selection leaked into the next test's
+   `load()` and broke five previously passing tests. Both Kanban test classes now clear
+   persisted selections in `setUp`/`tearDown`. **Any future per-server persistence needs
+   the same isolation.**
+
+Verified red/green by stashing the production wiring: fails (rc 65) without it, passes
+with it. Full suite 1669 / 0 / 2.
 - **Expected:** the selected board survives relaunch; the active board never changes
   without user action.
 - **Observed (upstream):** relaunch silently resets the browsed board.

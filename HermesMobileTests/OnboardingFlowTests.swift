@@ -2,6 +2,80 @@ import XCTest
 @testable import HermesMobile
 
 final class OnboardingFlowTests: XCTestCase {
+    /// Issue #285: a probed auth status belongs to the URL and headers it was probed
+    /// against. Editing either must invalidate it, or `isPasswordRequired` can hide
+    /// the password field using another server's trusted-header state and `connect()`
+    /// skips the re-probe, leaving no way to supply the password the new server wants.
+    @MainActor
+    func testEditingServerURLInvalidatesTheProbedAuthStatus() throws {
+        let viewModel = OnboardingViewModel()
+        viewModel.serverURLString = "https://trusted.example.test"
+        viewModel.applyProbedAuthStatus(try Self.authStatus(
+            #"{"auth_enabled": true, "logged_in": true, "trusted_auth_enabled": true}"#
+        ))
+
+        XCTAssertFalse(
+            viewModel.isPasswordRequired,
+            "a trusted-header server that already signed us in needs no password"
+        )
+
+        viewModel.serverURLString = "https://password.example.test"
+
+        XCTAssertTrue(
+            viewModel.isPasswordRequired,
+            "editing the server URL must invalidate the probe and show the password field again"
+        )
+        XCTAssertNil(
+            viewModel.currentAuthStatus,
+            "a status probed against a different server must not be treated as current"
+        )
+    }
+
+    @MainActor
+    func testEditingCustomHeadersInvalidatesTheProbedAuthStatus() throws {
+        let viewModel = OnboardingViewModel()
+        viewModel.serverURLString = "https://trusted.example.test"
+        viewModel.applyProbedAuthStatus(try Self.authStatus(
+            #"{"auth_enabled": true, "logged_in": true, "trusted_auth_enabled": true}"#
+        ))
+        XCTAssertFalse(viewModel.isPasswordRequired)
+
+        // The headers are what make a trusted-header proxy authenticate us, so
+        // changing them can change the answer entirely.
+        viewModel.customHeaders = [CustomHeader(name: "Cf-Access-Jwt-Assertion", value: "token")]
+
+        XCTAssertTrue(
+            viewModel.isPasswordRequired,
+            "editing custom headers must invalidate the probe"
+        )
+        XCTAssertNil(viewModel.currentAuthStatus)
+    }
+
+    /// Re-probing against the edited server must make the status current again.
+    @MainActor
+    func testReprobingAfterAnEditRestoresTheStatus() throws {
+        let viewModel = OnboardingViewModel()
+        viewModel.serverURLString = "https://first.example.test"
+        viewModel.applyProbedAuthStatus(try Self.authStatus(#"{"auth_enabled": false}"#))
+        XCTAssertFalse(viewModel.isPasswordRequired)
+
+        viewModel.serverURLString = "https://second.example.test"
+        XCTAssertTrue(viewModel.isPasswordRequired)
+
+        viewModel.applyProbedAuthStatus(try Self.authStatus(#"{"auth_enabled": false}"#))
+        XCTAssertFalse(
+            viewModel.isPasswordRequired,
+            "a fresh probe against the edited server is current again"
+        )
+        XCTAssertNotNil(viewModel.currentAuthStatus)
+    }
+
+    private static func authStatus(_ json: String) throws -> AuthStatusResponse {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(AuthStatusResponse.self, from: Data(json.utf8))
+    }
+
     func testPrimaryButtonTitlesFollowPagerFlow() {
         XCTAssertEqual(OnboardingFlowPolicy.primaryButtonTitle(for: 0), "Get Started")
         XCTAssertEqual(OnboardingFlowPolicy.primaryButtonTitle(for: 1), "Set Up")

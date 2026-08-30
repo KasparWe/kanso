@@ -9,10 +9,45 @@ final class OnboardingViewModel {
     var serverURLString = ""
     var password = ""
     var customHeaders: [CustomHeader] = []
-    var authStatus: AuthStatusResponse?
-    var connectionMessage: String?
+    private(set) var authStatus: AuthStatusResponse?
     var errorMessage: String?
     var isWorking = false
+
+    // A probed status describes one specific (URL, headers) pair. Keeping it after
+    // the user edits either would let `isPasswordRequired` hide the password field
+    // using another server's trusted-header state, and would let `connect()` skip
+    // the re-probe the new server needs (#285).
+    private var probedServerURLString: String?
+    private var probedCustomHeaders: [CustomHeader]?
+    private var probedConnectionMessage: String?
+
+    private var isProbeCurrent: Bool {
+        authStatus != nil
+            && probedServerURLString == serverURLString
+            && probedCustomHeaders == customHeaders
+    }
+
+    /// `authStatus`, but only while it still describes what is in the form.
+    /// Everything deciding whether a password is required must read this, never
+    /// the raw cache.
+    var currentAuthStatus: AuthStatusResponse? {
+        isProbeCurrent ? authStatus : nil
+    }
+
+    /// Suppressed once the probe goes stale — a lingering "Connection ok" next to
+    /// an edited URL asserts something we no longer know.
+    var connectionMessage: String? {
+        isProbeCurrent ? probedConnectionMessage : nil
+    }
+
+    /// Records a freshly probed status together with the inputs it was probed
+    /// against, so a later edit invalidates it.
+    func applyProbedAuthStatus(_ status: AuthStatusResponse?) {
+        authStatus = status
+        probedServerURLString = status == nil ? nil : serverURLString
+        probedCustomHeaders = status == nil ? nil : customHeaders
+        if status == nil { probedConnectionMessage = nil }
+    }
 
     init(
         savedServer: URL? = nil,
@@ -31,14 +66,15 @@ final class OnboardingViewModel {
         // password either. Passkey/OIDC-only → hide the field; connect()
         // surfaces the specific unsupported message instead. Unknown (nil)
         // keeps today's "show the field" default.
-        guard authStatus?.authEnabled != false else { return false }
-        guard authStatus?.isAlreadySignedIn != true else { return false }
-        return authStatus?.passwordAuthEnabled != false
+        let status = currentAuthStatus
+        guard status?.authEnabled != false else { return false }
+        guard status?.isAlreadySignedIn != true else { return false }
+        return status?.passwordAuthEnabled != false
     }
 
     func testConnection(authManager: AuthManager) async {
         errorMessage = nil
-        connectionMessage = nil
+        probedConnectionMessage = nil
         isWorking = true
         defer { isWorking = false }
 
@@ -47,13 +83,13 @@ final class OnboardingViewModel {
                 serverURLString: serverURLString,
                 customHeaders: customHeaders
             )
-            authStatus = status
+            applyProbedAuthStatus(status)
             if let message = AuthManager.unsupportedSignInMessage(for: status) {
                 errorMessage = message
             } else if status.isAlreadySignedIn {
-                connectionMessage = String(localized: "Connection ok. Already signed in by this server.")
+                probedConnectionMessage = String(localized: "Connection ok. Already signed in by this server.")
             } else {
-                connectionMessage = status.authEnabled == true
+                probedConnectionMessage = status.authEnabled == true
                     ? String(localized: "Connection ok. Password required.")
                     : String(localized: "Connection ok. Password not required.")
             }
@@ -64,9 +100,9 @@ final class OnboardingViewModel {
 
     func connect(authManager: AuthManager) async {
         errorMessage = nil
-        connectionMessage = nil
+        probedConnectionMessage = nil
 
-        if let validationMessage = Self.passwordValidationMessage(authStatus: authStatus, password: password) {
+        if let validationMessage = Self.passwordValidationMessage(authStatus: currentAuthStatus, password: password) {
             errorMessage = validationMessage
             return
         }
@@ -74,18 +110,18 @@ final class OnboardingViewModel {
         isWorking = true
         defer { isWorking = false }
 
-        if authStatus == nil {
+        if currentAuthStatus == nil {
             do {
-                authStatus = try await authManager.testConnection(
+                applyProbedAuthStatus(try await authManager.testConnection(
                     serverURLString: serverURLString,
                     customHeaders: customHeaders
-                )
+                ))
             } catch {
                 errorMessage = error.localizedDescription
                 return
             }
 
-            if let validationMessage = Self.passwordValidationMessage(authStatus: authStatus, password: password) {
+            if let validationMessage = Self.passwordValidationMessage(authStatus: currentAuthStatus, password: password) {
                 errorMessage = validationMessage
                 return
             }

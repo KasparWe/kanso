@@ -37,16 +37,16 @@ untouched deliberately.
 | P0-2 · stale Live Activity | **NOT FIXABLE APP-SIDE** — Phase 2 push dependency |
 | P0-3 · title leaks into transcript | **NOT APP-LAYER** — Agent; needs live SSE capture |
 | P0-4 · Kanban board reset | `REPORTED` |
-| P0-5 · stale auth after URL/header edit | `REPORTED` |
+| P0-5 · stale auth after URL/header edit | **FIXED** — probe-identity invalidation, red/green verified |
 | P1-1 · dictation 60 s cutoff | `REPORTED` |
 | P1-2 · unbounded draft attachments | `REPORTED` |
 
-P0-5, P1-1 and P1-2 remain `REPORTED` and are **not reproduced**. A green unit suite does not
+P1-1 and P1-2 remain `REPORTED` and are **not reproduced**. A green unit suite does not
 reproduce them: each is a runtime, lifecycle, or performance defect the unit tests never
 exercise — which was itself the finding, since 1665 passing tests coexisted with all of
 them. Do not fix a `REPORTED` entry before reproducing it.
 
-Suite is now **1669 passed / 0 failed / 2 skipped** (three tests from P0-1, one from P0-4).
+Suite is now **1672 passed / 0 failed / 2 skipped** (3 from P0-1, 1 from P0-4, 3 from P0-5).
 
 Phase 0 gate: the signed simulator install is **done** (Team ID `H55GUGZRDX`, app installs
 and launches as `app.kanso`). Only the **live server smoke** remains, which needs the
@@ -302,7 +302,25 @@ with it. Full suite 1669 / 0 / 2.
 
 ### P0-5 · Onboarding keeps stale auth status after server URL or header edits
 
-- **Verdict:** `REPORTED` — upstream [#285](https://github.com/uzairansaruzi/hermex/issues/285)
+- **Verdict:** `FIXED` (2026-08-30, commit `2e63833`) — upstream [#285](https://github.com/uzairansaruzi/hermex/issues/285)
+
+#### Root cause
+
+`OnboardingViewModel` stored `serverURLString`, `customHeaders` and the probed
+`authStatus` as independent mutable properties, so editing the URL or headers kept a
+status that described a *different* server. `isPasswordRequired` then hid the password
+field using stale trusted-header state, and `connect()`'s `if authStatus == nil` re-probe
+was skipped because the stale value was non-nil.
+
+#### Fix
+
+Probe-identity invalidation rather than property observers (which interact badly with
+`@Observable`): the view model records the URL and headers each probe was taken against,
+and `currentAuthStatus` returns `nil` once either has changed. `connectionMessage` is
+derived the same way, so a stale "Connection ok" cannot sit beside an edited URL.
+
+Verified red/green by neutralising `isProbeCurrent` to the pre-fix behaviour: all three
+new tests fail, all pass when restored.
 - **Layer:** App
 - **Expected:** editing the server URL or auth headers invalidates the previous auth
   result.

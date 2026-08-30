@@ -2,7 +2,7 @@
 
 > **Maintainer-only ops.** Everything in this file requires the maintainer's Apple Developer account, App Store Connect access, and signing credentials. Contributors never need this runbook to build, test, or contribute to the app.
 
-This is the step-by-step checklist for getting Hermex ready for external TestFlight testers. Work through it in order. Each numbered item is intended to be a fresh, focused Codex session or an owner-only App Store Connect task.
+This is the step-by-step checklist for getting Kanso ready for external TestFlight testers. Work through it in order. Each numbered item is intended to be a fresh, focused Codex session or an owner-only App Store Connect task.
 
 Goal: invite external testers only after a clean release-candidate build has been uploaded, owner-verified internally on device, submitted to Beta App Review, and approved.
 
@@ -111,7 +111,7 @@ Preferred implementation:
    - `method = app-store-connect`
    - `destination = upload`
    - `signingStyle = automatic`
-   - `teamID = 6GYD9C9N6R`
+   - `teamID = H55GUGZRDX`
    - `uploadSymbols = true`
    - no `testFlightInternalTestingOnly` key
 3. Add a separate manual workflow, for example `.github/workflows/external-testflight.yml`, with stronger gates:
@@ -152,11 +152,11 @@ Purpose: prevent archive/upload failures caused by missing identifiers or entitl
 Owner task in Apple Developer / App Store Connect:
 
 1. Confirm app bundle ID exists:
-   - `com.uzairansar.hermesmobile`
+   - `app.kanso`
 2. Confirm share extension bundle ID exists:
-   - `com.uzairansar.hermesmobile.shareextension`
+   - `app.kanso.shareextension`
 3. Confirm App Group exists:
-   - `group.com.uzairansar.hermesmobile`
+   - `group.app.kanso`
 4. Confirm the App Group is enabled for both the app and share-extension bundle IDs.
 5. Confirm automatic signing can create/update App Store provisioning profiles for both targets.
 6. Confirm Apple Developer Program agreements are accepted.
@@ -177,9 +177,9 @@ Exit criteria:
 Current local result as of 2026-05-15:
 
 - Local validation passed on `codex/testflight-doc-reconcile`.
-- App target Release settings use automatic signing, Team ID `6GYD9C9N6R`, bundle ID `com.uzairansar.hermesmobile`, and `HermesMobile/Resources/HermesMobile.entitlements`.
-- Share extension Release settings use automatic signing, Team ID `6GYD9C9N6R`, bundle ID `com.uzairansar.hermesmobile.shareextension`, and `HermesShareExtension/Resources/HermesShareExtension.entitlements`.
-- Both entitlement files include `group.com.uzairansar.hermesmobile`.
+- App target Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso`, and `HermesMobile/Resources/HermesMobile.entitlements`.
+- Share extension Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso.shareextension`, and `HermesShareExtension/Resources/HermesShareExtension.entitlements`.
+- Both entitlement files include `group.app.kanso`.
 - Owner confirmed the Apple Developer Portal and App Store Connect API key items on 2026-05-15.
 
 Current Step 4 status:
@@ -231,13 +231,13 @@ Draft App Store Connect metadata:
 Beta App Description:
 
 ```text
-Hermex is a native iOS client for a self-hosted Hermes Web UI developer-agent server. Use it to sign in to your configured server, browse sessions, send messages with composer options and attachments, stream responses, view workspace files, and open read-only Tasks, Skills, Memory, and Usage Analytics panels.
+Kanso is a native iOS client for a self-hosted Hermes Web UI developer-agent server. Use it to sign in to your configured server, browse sessions, send messages with composer options and attachments, stream responses, view workspace files, and open read-only Tasks, Skills, Memory, and Usage Analytics panels.
 ```
 
 What to Test:
 
 ```text
-Test core Hermex workflows: sign in to a self-hosted Hermes Web UI server, browse sessions, open existing conversations, send messages with model/reasoning/workspace options, stream responses, attach photos/files, use share extension import, browse workspace files, and view read-only Tasks, Skills, Memory, and Usage Analytics.
+Test core Kanso workflows: sign in to a self-hosted Hermes Web UI server, browse sessions, open existing conversations, send messages with model/reasoning/workspace options, stream responses, attach photos/files, use share extension import, browse workspace files, and view read-only Tasks, Skills, Memory, and Usage Analytics.
 ```
 
 Beta App Review Information:
@@ -622,7 +622,7 @@ Owner task in App Store Connect:
 Suggested `What to Test`:
 
 ```text
-Test core Hermex workflows: sign in to a self-hosted Hermes Web UI server, browse sessions, open existing conversations, send messages with model/reasoning/workspace options, stream responses, attach photos/files, use share extension import, browse workspace files, and view read-only Tasks, Skills, Memory, and Usage Analytics.
+Test core Kanso workflows: sign in to a self-hosted Hermes Web UI server, browse sessions, open existing conversations, send messages with model/reasoning/workspace options, stream responses, attach photos/files, use share extension import, browse workspace files, and view read-only Tasks, Skills, Memory, and Usage Analytics.
 ```
 
 Exit criteria:
@@ -694,7 +694,7 @@ xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration R
 Use this as a starting point and keep it accurate for the exact submitted build.
 
 ```text
-Hermex is a native iOS client for a user-controlled Hermes Web UI developer-agent server.
+Kanso is a native iOS client for a user-controlled Hermes Web UI developer-agent server.
 
 Review server:
 https://<your-server>

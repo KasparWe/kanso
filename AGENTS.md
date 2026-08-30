@@ -1,7 +1,11 @@
-# AGENTS.md — working agreement for Hermex
+# AGENTS.md — working agreement for Kanso
 
-Hermex is a native SwiftUI iPhone app (Xcode target/scheme `HermesMobile`, App Store
-name `Hermex`) for a self-hosted `hermes-webui` server. `PROJECT_SPEC.md` is the
+Kanso is a native SwiftUI iPhone app for a self-hosted `hermes-webui` server, forked
+from [Hermex](https://github.com/uzairansaruzi/hermex). The Xcode target and scheme are
+still `HermesMobile` and the source directories still say `Hermes*` — that rename is
+deliberately deferred so upstream merges stay practical (see
+`docs/adr/0001-fork-and-upstream-strategy.md`). "Hermes" refers to the **server**, not
+this app. `PROJECT_SPEC.md` is the
 product/API source of truth — if a request conflicts with it, stop and ask.
 Read by every agent (Codex, Claude Code, …); keep it tool-agnostic.
 
@@ -56,14 +60,15 @@ Read by every agent (Codex, Claude Code, …); keep it tool-agnostic.
   build + launch the app for the human's manual simulator test when UI changed.
 
 ## App identity (resolved via xcconfig — not grep-able)
-Bundle ID `com.uzairansar.hermesmobile` · tests `….tests` · Team `6GYD9C9N6R` · SKU `hermes-mobile-ios`.
+Bundle ID `app.kanso` · app group `group.app.kanso` · tests `….tests` · Team `H55GUGZRDX`.
+URL scheme `kanso`. Display name `Kanso`. All resolved via `Config/Shared.xcconfig`.
 
 ## "push to branch testflight" (maintainer-only)
-Upload the current branch to the side-by-side **Hermex Branch** internal TestFlight app
-(`com.uzairansar.hermesmobile.branch`) — a TestFlight upload, **not** a git push.
+Upload the current branch to the side-by-side **Kanso Branch** internal TestFlight app
+(`app.kanso.branch`) — a TestFlight upload, **not** a git push.
 Requires the maintainer's App Store Connect access; contributors never need this. Use a
 unique `CURRENT_PROJECT_VERSION` (e.g. `YYYYMMDDHHMM`) each time. Full commands + branch
-identity: `DEVELOPMENT.md`. Never touch the production `com.uzairansar.hermesmobile` app
+identity: `DEVELOPMENT.md`. Never touch the production `app.kanso` app
 unless explicitly asked.
 
 ## Working with the human

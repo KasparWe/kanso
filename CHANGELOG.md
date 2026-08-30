@@ -1,7 +1,8 @@
 # Changelog
 
-Notable changes to Hermex. Version headings correspond to App Store releases;
-unreleased changes accumulate at the top. Format follows
+Notable changes. Version headings at 1.5.0 and below are **Hermex** App Store releases,
+inherited from upstream and left unedited as history — Kanso forked after 1.5.0 and is not
+published. Unreleased changes accumulate at the top. Format follows
 [Keep a Changelog](https://keepachangelog.com/) with Added / Changed / Fixed /
 Security sections per release.
 

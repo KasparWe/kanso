@@ -4,8 +4,12 @@ Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for issue 
 
 ## Repository
 
-- GitHub repo: `uzairansaruzi/hermex`
-- Remote: `https://github.com/uzairansaruzi/hermex.git`
+- GitHub repo: `KasparWe/kanso` (this fork — where work is tracked)
+- Remote: `origin` → `https://github.com/KasparWe/kanso`
+- Upstream: `upstream` → `https://github.com/uzairansaruzi/hermex` (fetch only; its push
+  URL is deliberately disabled). Upstream issues are read for context and for
+  contributing general fixes back, but `gh` defaults to `origin` — pass
+  `--repo uzairansaruzi/hermex` explicitly when you mean upstream.
 
 Infer the repo from `git remote -v` when possible; `gh` does this automatically when run inside the clone.
 

@@ -267,9 +267,19 @@ curl -sS -b "$JAR" "$BASE/api/sessions" \
 # expect: both false
 ```
 
-Green for this section: every mutate returns `ok: true` (or HTTP 200 for the
-no-body checks), the branch child id is captured, and the final verify shows
-**both** sessions gone.
+Green for this section: every mutate returns HTTP 200 with no `error`, the branch
+child id is captured, and the final verify shows **both** sessions gone.
+
+**Corrected after the 2026-08-30 live smoke:** not every mutate returns `ok`.
+`/api/session/rename` returns `{"session": …}` with no `ok` field by design
+(`api/routes.py:4563` at the pin), while pin/archive/move do return `ok: true`.
+Judge on HTTP 200 plus absent `error`, not on `ok`. The app already does this —
+`SessionMutationResponse.ok` is optional and callers branch on `error`.
+
+**Worth adding to the run:** snapshot every `session_id` from `/api/sessions`
+*before* creating the disposable session, assert the new id is not among them, and
+re-check afterwards that none of the pre-existing ids disappeared. That turns "I
+only touched the throwaway" from an intention into a verified fact.
 
 Cleanup safety: if anything aborts mid-sequence, delete `$DSID` (and `$BSID` if
 set) before stopping, and remove the cookie jar: `rm -f "$JAR"`.

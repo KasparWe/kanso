@@ -72,6 +72,20 @@ not run** — it needs explicit owner confirmation.
   `uptime_seconds` — possibly useful to Runs, not yet used.
 - At the time of the run: 100 sessions, **0 streaming**.
 
+### Step 3 — mutating sequence (run 2026-08-30, owner-approved)
+
+Green. Created disposable session `80f5ff5c6e97`, branched child `d0129cf1a354`,
+exercised rename / pin / archive / move / branch / truncate, deleted both.
+
+Safety was verified, not assumed: all 100 pre-existing `session_id`s were snapshotted
+first, the new ids were asserted absent from that set before any mutation, and afterwards
+**0 pre-existing sessions were lost**. Both throwaway sessions confirmed gone.
+
+One shape note: `/api/session/rename` returns `{"session": …}` with **no `ok` field**
+(`api/routes.py:4563`), unlike pin/archive/move. Not a defect — `SessionMutationResponse.ok`
+is optional and callers branch on `error` — but the checklist's "every mutate returns
+`ok: true`" was wrong and is corrected.
+
 ### Corrections the smoke forced
 
 | Claim | Reality |

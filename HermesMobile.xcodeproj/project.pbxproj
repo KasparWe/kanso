@@ -268,6 +268,7 @@
 		C29400000000000000000291 /* RunsProjectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29400000000000000000292 /* RunsProjectionTests.swift */; };
 		C29600000000000000000291 /* RunsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29600000000000000000292 /* RunsViewModelTests.swift */; };
 		C29900000000000000000291 /* WorkFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29900000000000000000292 /* WorkFeatureTests.swift */; };
+		C2A100000000000000000291 /* NowSummaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A100000000000000000292 /* NowSummaryTests.swift */; };
 		C21300000000000000000001 /* StreamingTextFade.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000002 /* StreamingTextFade.swift */; };
 		C21300000000000000000003 /* StreamingTextFadeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000004 /* StreamingTextFadeRenderer.swift */; };
 		C21300000000000000000005 /* StreamingTextFadeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000006 /* StreamingTextFadeTests.swift */; };
@@ -280,6 +281,7 @@
 		C29300000000000000000291 /* RunsProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29300000000000000000292 /* RunsProjection.swift */; };
 		C29500000000000000000291 /* RunsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29500000000000000000292 /* RunsViewModel.swift */; };
 		C29700000000000000000291 /* WorkFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29700000000000000000292 /* WorkFeature.swift */; };
+		C2A000000000000000000291 /* NowSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A000000000000000000292 /* NowSummary.swift */; };
 		C29800000000000000000291 /* WorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29800000000000000000292 /* WorkView.swift */; };
 		C29200000000000000000291 /* KanbanBoardSelectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29200000000000000000292 /* KanbanBoardSelectionStore.swift */; };
 		C14900000000000000000007 /* KanbanLabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14900000000000000000008 /* KanbanLabView.swift */; };
@@ -644,6 +646,7 @@
 		C29400000000000000000292 /* RunsProjectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunsProjectionTests.swift; sourceTree = "<group>"; };
 		C29600000000000000000292 /* RunsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunsViewModelTests.swift; sourceTree = "<group>"; };
 		C29900000000000000000292 /* WorkFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkFeatureTests.swift; sourceTree = "<group>"; };
+		C2A100000000000000000292 /* NowSummaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowSummaryTests.swift; sourceTree = "<group>"; };
 		C21300000000000000000002 /* StreamingTextFade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFade.swift; sourceTree = "<group>"; };
 		C21300000000000000000004 /* StreamingTextFadeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFadeRenderer.swift; sourceTree = "<group>"; };
 		C21300000000000000000006 /* StreamingTextFadeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFadeTests.swift; sourceTree = "<group>"; };
@@ -656,6 +659,7 @@
 		C29300000000000000000292 /* RunsProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RunsProjection.swift; path = HermesMobile/Features/Work/RunsProjection.swift; sourceTree = SOURCE_ROOT; };
 		C29500000000000000000292 /* RunsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RunsViewModel.swift; path = HermesMobile/Features/Work/RunsViewModel.swift; sourceTree = SOURCE_ROOT; };
 		C29700000000000000000292 /* WorkFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WorkFeature.swift; path = HermesMobile/Features/Work/WorkFeature.swift; sourceTree = SOURCE_ROOT; };
+		C2A000000000000000000292 /* NowSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NowSummary.swift; path = HermesMobile/Features/Home/NowSummary.swift; sourceTree = SOURCE_ROOT; };
 		C29800000000000000000292 /* WorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WorkView.swift; path = HermesMobile/Features/Work/WorkView.swift; sourceTree = SOURCE_ROOT; };
 		C29200000000000000000292 /* KanbanBoardSelectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardSelectionStore.swift; sourceTree = "<group>"; };
 		C14900000000000000000008 /* KanbanLabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanLabView.swift; sourceTree = "<group>"; };
@@ -839,6 +843,7 @@
 				C29400000000000000000292 /* RunsProjectionTests.swift */,
 				C29600000000000000000292 /* RunsViewModelTests.swift */,
 				C29900000000000000000292 /* WorkFeatureTests.swift */,
+				C2A100000000000000000292 /* NowSummaryTests.swift */,
 				C21300000000000000000006 /* StreamingTextFadeTests.swift */,
 				C23400000000000000000006 /* StreamingLabReplayTests.swift */,
 				C1490000000000000000000A /* APIClientKanbanTests.swift */,
@@ -997,6 +1002,7 @@
 				C29300000000000000000292 /* RunsProjection.swift */,
 				C29500000000000000000292 /* RunsViewModel.swift */,
 				C29700000000000000000292 /* WorkFeature.swift */,
+				C2A000000000000000000292 /* NowSummary.swift */,
 				C29800000000000000000292 /* WorkView.swift */,
 				C29200000000000000000292 /* KanbanBoardSelectionStore.swift */,
 				C14900000000000000000008 /* KanbanLabView.swift */,
@@ -1504,6 +1510,7 @@
 				C29300000000000000000291 /* RunsProjection.swift in Sources */,
 				C29500000000000000000291 /* RunsViewModel.swift in Sources */,
 				C29700000000000000000291 /* WorkFeature.swift in Sources */,
+				C2A000000000000000000291 /* NowSummary.swift in Sources */,
 				C29800000000000000000291 /* WorkView.swift in Sources */,
 				C29200000000000000000291 /* KanbanBoardSelectionStore.swift in Sources */,
 				C14900000000000000000007 /* KanbanLabView.swift in Sources */,
@@ -1723,6 +1730,7 @@
 				C29400000000000000000291 /* RunsProjectionTests.swift in Sources */,
 				C29600000000000000000291 /* RunsViewModelTests.swift in Sources */,
 				C29900000000000000000291 /* WorkFeatureTests.swift in Sources */,
+				C2A100000000000000000291 /* NowSummaryTests.swift in Sources */,
 				C21300000000000000000005 /* StreamingTextFadeTests.swift in Sources */,
 				C23400000000000000000005 /* StreamingLabReplayTests.swift in Sources */,
 				C14900000000000000000009 /* APIClientKanbanTests.swift in Sources */,

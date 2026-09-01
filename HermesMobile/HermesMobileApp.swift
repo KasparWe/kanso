@@ -45,6 +45,17 @@ struct HermesMobileApp: App {
     @State private var authManager = AuthManager()
     @AppStorage(AppTheme.storageKey) private var appThemeRawValue = AppTheme.system.rawValue
 
+    #if DEBUG
+    /// Server URL passed after `--work`, if that launch argument is present.
+    private static var workPreviewServer: URL? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "--work") else { return nil }
+        let next = arguments.index(after: index)
+        guard next < arguments.endIndex else { return URL(string: "https://work.preview.invalid") }
+        return URL(string: arguments[next]) ?? URL(string: "https://work.preview.invalid")
+    }
+    #endif
+
     var body: some Scene {
         WindowGroup {
             #if DEBUG
@@ -55,6 +66,14 @@ struct HermesMobileApp: App {
                 NavigationStack {
                     StreamingLabView()
                 }
+            } else if let workServer = Self.workPreviewServer {
+                // Same hook as the Streaming Lab: opens Work directly so it can be
+                // inspected in the simulator without navigating or signing in.
+                // `--work https://host` (issue #279 groundwork, Phase 2).
+                NavigationStack {
+                    WorkView(server: workServer, onAPIError: { _ in })
+                }
+                .preferredColorScheme(AppTheme.storedValue(appThemeRawValue).colorScheme)
             } else {
                 ContentView(authManager: authManager)
                     .preferredColorScheme(AppTheme.storedValue(appThemeRawValue).colorScheme)

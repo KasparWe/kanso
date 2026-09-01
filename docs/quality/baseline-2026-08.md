@@ -55,6 +55,46 @@ owner's cookie jar.
 **Baseline reference:** `master` = `origin/master` = `upstream/master` = `b4f26bf`,
 zero divergence. WebUI pins: tested `f1d399b4`, triaged `4b390e11`.
 
+## Live smoke — 2026-08-30
+
+Run against the owner's server with the read-only checks only. **Step 3 (mutating) was
+not run** — it needs explicit owner confirmation.
+
+- Auth: `POST /api/auth/login` → `{"ok": true}`, cookie accepted, `/api/auth/status` 200.
+- **Version skew is large:** live server reports `webui_version`
+  `exp-v0.52.158-29-g320789ae`; we pin `v0.51.85` (`f1d399b4`). Everything checked still
+  matched the pinned shapes, but the gap is worth an `UPSTREAM_TESTED_SHA` review.
+- 16 of 17 unparameterised read-only endpoints returned 200 with their expected keys.
+  Session-scoped `/api/session`, `/api/list`, `/api/approval/pending`,
+  `/api/clarify/pending` and `/api/session/status` all returned 200.
+- `/health` exposes `active_runs` and `active_streams` alongside `status`, `sessions`,
+  `uptime_seconds` — possibly useful to Runs, not yet used.
+- At the time of the run: 100 sessions, **0 streaming**.
+
+### Corrections the smoke forced
+
+| Claim | Reality |
+|---|---|
+| `ROADMAP.md`: "`/api/session/status` does carry `error`" | **Wrong, and it was mine.** Inferred from the app's `SessionStatusResponse` model rather than the server. `session_status` (`api/session_ops.py:129`) has no `error` field. There is **no failure signal for runs anywhere**; surfacing it needs a new upstream field. |
+| Checklist: `/api/reasoning` → `ok, …` | No `ok` key. Returns `show_reasoning`, `reasoning_effort`, `supported_efforts`, `supports_reasoning_effort`, `supports_thinking_toggle`. |
+| Checklist: `/api/crons/status` → `job_id, running, running_jobs` | Returns only `running` when idle and unparameterised. |
+
+### P1-3 · `SessionStatusResponse.isStreaming` never decodes
+
+- **Verdict:** `CONFIRMED` (latent — dead code today)
+- **Layer:** App
+- The server's `/api/session/status` returns **`agent_running`**, never `is_streaming`
+  — true both live and at the pin, and the docstring at `api/session_ops.py:132-135`
+  explains why. `SessionStatusResponse.isStreaming` therefore always decodes to `nil`.
+- **Not currently harmful:** nothing calls `APIClient.sessionStatus(id:)`. The method and
+  the model are unused, so the mismatch is latent.
+- **Why it still matters:** it is a loaded trap. Any future code that polls session status
+  and branches on `isStreaming` would silently read `nil` — tolerant decoding hides it.
+  Fix by mapping `agent_running`, or delete the unused method and model.
+- Also observed: 5 of the first 6 sessions returned `404 Session not found` from
+  `/api/session/status` while appearing in `/api/sessions`. Worth understanding before
+  relying on that endpoint.
+
 ## Verdict vocabulary
 
 | Verdict | Meaning |

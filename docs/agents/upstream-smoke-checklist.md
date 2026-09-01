@@ -157,7 +157,9 @@ curl -sS -b "$JAR" "$BASE/api/settings" | jq '{webui_version, agent_version, bot
 WEBUI_VERSION="$(curl -sS -b "$JAR" "$BASE/api/settings" | jq -r '.webui_version')"
 echo "webui_version = $WEBUI_VERSION  (map to a SHA per Step 0)"
 
-# 15. reasoning                                               -> ok, show_reasoning, reasoning_effort/effort
+# 15. reasoning     -> show_reasoning, reasoning_effort, supported_efforts,
+#                     supports_reasoning_effort, supports_thinking_toggle
+#                     (no `ok` key — corrected after the 2026-08-30 live smoke)
 curl -sS -b "$JAR" "$BASE/api/reasoning" | jq '{ok, show_reasoning, reasoning_effort, effort}'
 
 # 16. profiles                                                -> profiles[], active
@@ -172,7 +174,8 @@ curl -sS -b "$JAR" "$BASE/api/commands" | jq '{count: (.commands|length)}'
 # 19. crons                                                   -> jobs[]
 curl -sS -b "$JAR" "$BASE/api/crons" | jq '{count: (.jobs|length)}'
 
-# 20. crons status                                            -> job_id, running, running_jobs
+# 20. crons status  -> running (always); job_id and running_jobs appear only when a
+#                     job is specified or running — corrected after the 2026-08-30 live smoke
 curl -sS -b "$JAR" "$BASE/api/crons/status" | jq '{running, running_jobs}'
 
 # 21. crons output (job_id from /api/crons; limit optional)   -> job_id, outputs[]

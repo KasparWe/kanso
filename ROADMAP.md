@@ -96,8 +96,16 @@ duplicate sends, no transcript corruption, and no unrecoverable stuck state.
   that was not achievable and has been corrected. "Completed" is likewise avoided: we know
   a stream ended, not that it succeeded.
 
-  Surfacing failure needs either a new upstream field or per-session status polling
-  (`/api/session/status` does carry `error`) — decide deliberately, do not infer it.
+  **Corrected 2026-08-30 after a live smoke.** An earlier version of this note claimed
+  `/api/session/status` carries `error`, so failure could be polled per session. That was
+  an inference from the app's own `SessionStatusResponse` model, not from the server —
+  precisely the mistake `AGENTS.md` rule 1 forbids. Verified against the live server and
+  the pinned source: `session_status` (`api/session_ops.py:129`) returns only
+  `session_id, title, model, profile, hermes_home, workspace, personality, message_count,
+  created_at, updated_at, agent_running, input_tokens, output_tokens, total_tokens,
+  estimated_cost`. **There is no failure signal for runs anywhere** — not on a session row
+  and not on `/api/session/status`. Surfacing it requires a new upstream field, which
+  means an upstream conversation, not app work.
 - Schedules UX over the existing cron API: grouped list, simple editor, detail, history,
   Run Now, Pause/Resume, error acknowledgement, output and session links.
 - Mobile Bridge ADR, then a minimal plugin plus service.

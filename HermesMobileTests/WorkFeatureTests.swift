@@ -48,14 +48,17 @@ final class WorkFeatureTests: XCTestCase {
         )
     }
 
-    func testWorkIsOffByDefaultSoIncompleteUIStaysHidden() {
-        // The flag key must exist and be distinct from the segment key, or
-        // enabling Work would clobber the remembered segment.
+    /// The owner enabled Work by default on 2026-08-30. It remains a flag so it
+    /// can be turned off; this pins the decision so a silent flip is visible in a
+    /// diff either way.
+    func testWorkIsEnabledByDefault() {
+        XCTAssertTrue(WorkFeature.defaultIsEnabled)
+    }
+
+    /// The two keys must stay distinct, or enabling Work would clobber the
+    /// remembered segment.
+    func testFlagAndSegmentKeysAreDistinct() {
         XCTAssertNotEqual(WorkFeature.isEnabledKey, WorkFeature.lastSegmentKey)
-        XCTAssertFalse(
-            UserDefaults.standard.bool(forKey: WorkFeature.isEnabledKey),
-            "Work must default to off per the ROADMAP release policy"
-        )
     }
 
     func testEverySegmentHasANonEmptyTitle() {

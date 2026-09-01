@@ -7,7 +7,7 @@ struct SessionListView: View {
     // Home's Now header (Phase 2). Behind the same flag as Work so the two ship
     // together; PRODUCT.md puts the header above recent conversations, and this
     // list *is* that surface, so no root-navigation change is needed yet.
-    @AppStorage(WorkFeature.isEnabledKey) private var isWorkEnabled = false
+    @AppStorage(WorkFeature.isEnabledKey) private var isWorkEnabled = WorkFeature.defaultIsEnabled
     @State private var nowViewModel: NowViewModel?
 
     private static let searchChromeIconVisualSize: CGFloat = 36

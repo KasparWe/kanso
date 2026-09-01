@@ -85,6 +85,7 @@ struct SettingsView: View {
     @AppStorage(SessionIdentitySettings.initialsKey) private var identityInitials = ""
     @AppStorage(SectionVisibilitySettings.tasksKey) private var showsTasksSection = true
     @AppStorage(SectionVisibilitySettings.kanbanKey) private var showsKanbanSection = true
+    @AppStorage(WorkFeature.isEnabledKey) private var isWorkEnabled = WorkFeature.defaultIsEnabled
     @AppStorage(SectionVisibilitySettings.skillsKey) private var showsSkillsSection = true
     @AppStorage(SectionVisibilitySettings.memoryKey) private var showsMemorySection = true
     @AppStorage(SectionVisibilitySettings.insightsKey) private var showsInsightsSection = true
@@ -544,6 +545,28 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Support")
+                }
+
+                SettingsCard(title: String(localized: "Work")) {
+                    SettingsToggleRow(
+                        title: String(localized: "Show Work and the Now header"),
+                        systemImage: "square.stack.3d.up",
+                        isOn: $isWorkEnabled
+                    )
+
+                    if isWorkEnabled {
+                        NavigationLink {
+                            WorkView(server: server, onAPIError: { _ in })
+                        } label: {
+                            SettingsAccessoryRow(
+                                title: String(localized: "Open Work"),
+                                systemImage: "arrow.triangle.2.circlepath"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    SettingsFootnote(String(localized: "Runs and Schedules are live. Board is not wired to a real Kanban board yet. Turning this off hides both Work and the Now header."))
                 }
 
                 #if DEBUG

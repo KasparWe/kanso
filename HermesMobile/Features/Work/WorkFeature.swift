@@ -22,12 +22,20 @@ enum WorkSegment: String, CaseIterable, Identifiable, Sendable {
 
 /// Storage and gating for the Work destination (Phase 2 of `ROADMAP.md`).
 ///
-/// Work is behind a flag defaulting to **off**: the release policy requires
-/// incomplete Home/Work work to stay invisible, so an unfinished destination
-/// cannot disrupt daily use of the app.
+/// Work stays behind a flag so it can be turned off, but the **owner enabled it
+/// by default** on 2026-08-30 once Runs, the Work shell and the Now header were
+/// all landed and tested. Board is still honest about not being wired (Phase 3).
+///
+/// Every call site must read `defaultIsEnabled` rather than writing a literal —
+/// two `@AppStorage` declarations with different defaults would disagree about
+/// what "unset" means.
 enum WorkFeature {
     static let isEnabledKey = "work.isEnabled"
     static let lastSegmentKey = "work.lastSegment"
+
+    /// Value used when nothing is stored. `@AppStorage` resolves "unset" at each
+    /// declaration, so this constant is the one place it is decided.
+    static let defaultIsEnabled = true
 
     /// Default when nothing is stored. `PRODUCT.md` puts Runs first because it
     /// answers "what is happening right now?", which is the reason to open Work.

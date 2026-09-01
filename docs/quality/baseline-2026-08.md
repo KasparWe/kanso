@@ -36,21 +36,22 @@ untouched deliberately.
 | P0-1 · long-stream unresponsiveness | **FIXED** — reproduced by measurement, fixed, regression test added |
 | P0-2 · stale Live Activity | **NOT FIXABLE APP-SIDE** — Phase 2 push dependency |
 | P0-3 · title leaks into transcript | **NOT APP-LAYER** — Agent; needs live SSE capture |
-| P0-4 · Kanban board reset | `REPORTED` |
+| P0-4 · Kanban board reset | **FIXED** — per-server persistence, red/green verified |
 | P0-5 · stale auth after URL/header edit | **FIXED** — probe-identity invalidation, red/green verified |
 | P1-1 · dictation 60 s cutoff | `REPORTED` |
 | P1-2 · unbounded draft attachments | `REPORTED` |
+| P1-3 · `SessionStatusResponse.isStreaming` never decodes | **CONFIRMED** — latent, dead code today |
 
 P1-1 and P1-2 remain `REPORTED` and are **not reproduced**. A green unit suite does not
 reproduce them: each is a runtime, lifecycle, or performance defect the unit tests never
 exercise — which was itself the finding, since 1665 passing tests coexisted with all of
 them. Do not fix a `REPORTED` entry before reproducing it.
 
-Suite is now **1672 passed / 0 failed / 2 skipped** (3 from P0-1, 1 from P0-4, 3 from P0-5).
+Suite is now **1716 passed / 0 failed / 2 skipped** (3 from P0-1, 1 from P0-4, 3 from P0-5, 14 RunsProjection, 8 RunsViewModel, 8 WorkFeature, 14 NowSummary).
 
-Phase 0 gate: the signed simulator install is **done** (Team ID `H55GUGZRDX`, app installs
-and launches as `app.kanso`). Only the **live server smoke** remains, which needs the
-owner's cookie jar.
+**Phase 0 gate is closed.** Signed simulator install done (Team ID `H55GUGZRDX`, runs as
+`app.kanso`), and the read-only live smoke ran on 2026-08-30 — see below. The mutating
+Step 3 is still outstanding and needs explicit owner confirmation.
 
 **Baseline reference:** `master` = `origin/master` = `upstream/master` = `b4f26bf`,
 zero divergence. WebUI pins: tested `f1d399b4`, triaged `4b390e11`.

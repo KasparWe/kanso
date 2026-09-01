@@ -1,5 +1,20 @@
 import Foundation
 
+/// Narrow client surface the Work → Runs list needs (Phase 2).
+///
+/// `approvalPending` and `clarifyPending` are deliberately per-session: verified
+/// against pinned `hermes-webui` `f1d399b4`, `_handle_approval_pending` reads
+/// `session_id` from the query and looks up a per-session queue — there is **no
+/// global pending query**. Callers must therefore bound how many sessions they
+/// probe; see `RunsViewModel`.
+protocol RunsDataClient: Sendable {
+    func sessions() async throws -> SessionsResponse
+    func approvalPending(sessionID: String) async throws -> ApprovalPendingResponse
+    func clarifyPending(sessionID: String) async throws -> ClarificationPendingResponse
+}
+
+extension APIClient: RunsDataClient {}
+
 extension APIClient {
     /// Parameterless overload kept so `InsightsDataClient` (and any other
     /// protocol witness) still sees the exact `sessions()` signature — a method

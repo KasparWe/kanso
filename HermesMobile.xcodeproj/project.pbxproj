@@ -266,6 +266,7 @@
 		C21200000000000000000005 /* ChatViewModelStreamingPaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21200000000000000000006 /* ChatViewModelStreamingPaceTests.swift */; };
 		C29100000000000000000291 /* ChatViewModelStreamingPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29100000000000000000292 /* ChatViewModelStreamingPerformanceTests.swift */; };
 		C29400000000000000000291 /* RunsProjectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29400000000000000000292 /* RunsProjectionTests.swift */; };
+		C29600000000000000000291 /* RunsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29600000000000000000292 /* RunsViewModelTests.swift */; };
 		C21300000000000000000001 /* StreamingTextFade.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000002 /* StreamingTextFade.swift */; };
 		C21300000000000000000003 /* StreamingTextFadeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000004 /* StreamingTextFadeRenderer.swift */; };
 		C21300000000000000000005 /* StreamingTextFadeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21300000000000000000006 /* StreamingTextFadeTests.swift */; };
@@ -276,6 +277,7 @@
 		C14900000000000000000003 /* APIClient+Kanban.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14900000000000000000004 /* APIClient+Kanban.swift */; };
 		C14900000000000000000005 /* KanbanFeatureState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14900000000000000000006 /* KanbanFeatureState.swift */; };
 		C29300000000000000000291 /* RunsProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29300000000000000000292 /* RunsProjection.swift */; };
+		C29500000000000000000291 /* RunsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29500000000000000000292 /* RunsViewModel.swift */; };
 		C29200000000000000000291 /* KanbanBoardSelectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29200000000000000000292 /* KanbanBoardSelectionStore.swift */; };
 		C14900000000000000000007 /* KanbanLabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14900000000000000000008 /* KanbanLabView.swift */; };
 		C14900000000000000000009 /* APIClientKanbanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1490000000000000000000A /* APIClientKanbanTests.swift */; };
@@ -637,6 +639,7 @@
 		C21200000000000000000006 /* ChatViewModelStreamingPaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModelStreamingPaceTests.swift; sourceTree = "<group>"; };
 		C29100000000000000000292 /* ChatViewModelStreamingPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModelStreamingPerformanceTests.swift; sourceTree = "<group>"; };
 		C29400000000000000000292 /* RunsProjectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunsProjectionTests.swift; sourceTree = "<group>"; };
+		C29600000000000000000292 /* RunsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunsViewModelTests.swift; sourceTree = "<group>"; };
 		C21300000000000000000002 /* StreamingTextFade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFade.swift; sourceTree = "<group>"; };
 		C21300000000000000000004 /* StreamingTextFadeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFadeRenderer.swift; sourceTree = "<group>"; };
 		C21300000000000000000006 /* StreamingTextFadeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTextFadeTests.swift; sourceTree = "<group>"; };
@@ -647,6 +650,7 @@
 		C14900000000000000000004 /* APIClient+Kanban.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIClient+Kanban.swift"; sourceTree = "<group>"; };
 		C14900000000000000000006 /* KanbanFeatureState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanFeatureState.swift; sourceTree = "<group>"; };
 		C29300000000000000000292 /* RunsProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RunsProjection.swift; path = HermesMobile/Features/Work/RunsProjection.swift; sourceTree = SOURCE_ROOT; };
+		C29500000000000000000292 /* RunsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RunsViewModel.swift; path = HermesMobile/Features/Work/RunsViewModel.swift; sourceTree = SOURCE_ROOT; };
 		C29200000000000000000292 /* KanbanBoardSelectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardSelectionStore.swift; sourceTree = "<group>"; };
 		C14900000000000000000008 /* KanbanLabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanLabView.swift; sourceTree = "<group>"; };
 		C1490000000000000000000A /* APIClientKanbanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientKanbanTests.swift; sourceTree = "<group>"; };
@@ -827,6 +831,7 @@
 				C21200000000000000000006 /* ChatViewModelStreamingPaceTests.swift */,
 				C29100000000000000000292 /* ChatViewModelStreamingPerformanceTests.swift */,
 				C29400000000000000000292 /* RunsProjectionTests.swift */,
+				C29600000000000000000292 /* RunsViewModelTests.swift */,
 				C21300000000000000000006 /* StreamingTextFadeTests.swift */,
 				C23400000000000000000006 /* StreamingLabReplayTests.swift */,
 				C1490000000000000000000A /* APIClientKanbanTests.swift */,
@@ -983,6 +988,7 @@
 			children = (
 				C14900000000000000000006 /* KanbanFeatureState.swift */,
 				C29300000000000000000292 /* RunsProjection.swift */,
+				C29500000000000000000292 /* RunsViewModel.swift */,
 				C29200000000000000000292 /* KanbanBoardSelectionStore.swift */,
 				C14900000000000000000008 /* KanbanLabView.swift */,
 				C15400000000000000000002 /* KanbanCardDetailState.swift */,
@@ -1487,6 +1493,7 @@
 				C15100000000000000000001 /* KanbanEventStreamClient.swift in Sources */,
 				C14900000000000000000005 /* KanbanFeatureState.swift in Sources */,
 				C29300000000000000000291 /* RunsProjection.swift in Sources */,
+				C29500000000000000000291 /* RunsViewModel.swift in Sources */,
 				C29200000000000000000291 /* KanbanBoardSelectionStore.swift in Sources */,
 				C14900000000000000000007 /* KanbanLabView.swift in Sources */,
 				C15400000000000000000001 /* KanbanCardDetailState.swift in Sources */,
@@ -1703,6 +1710,7 @@
 				C21200000000000000000005 /* ChatViewModelStreamingPaceTests.swift in Sources */,
 				C29100000000000000000291 /* ChatViewModelStreamingPerformanceTests.swift in Sources */,
 				C29400000000000000000291 /* RunsProjectionTests.swift in Sources */,
+				C29600000000000000000291 /* RunsViewModelTests.swift in Sources */,
 				C21300000000000000000005 /* StreamingTextFadeTests.swift in Sources */,
 				C23400000000000000000005 /* StreamingLabReplayTests.swift in Sources */,
 				C14900000000000000000009 /* APIClientKanbanTests.swift in Sources */,

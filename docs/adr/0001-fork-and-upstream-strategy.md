@@ -1,6 +1,18 @@
 # ADR 0001 — Fork and upstream strategy
 
-- **Status:** Accepted
+- **Status:** Accepted, **partially superseded 2026-08-30**
+
+> **Superseded:** sections 1 ("fork and harden, do not rewrite") and 6 (defer the rename)
+> no longer describe the project. On 2026-08-30 the owner renamed the project, scheme,
+> targets and directories to `Kanso*` and accepted that upstream merging is no longer
+> practical. The source was **kept** — this was a rename, not a rewrite, so section 1's
+> reasoning about not discarding tested behaviour still stands and was honoured. What
+> changed is that upstream is no longer a merge source: PR #33 (the unfixed half of #291)
+> and the staged voice series #248–257 must now be reimplemented by hand rather than
+> pulled. Cherry-picking individual upstream fixes remains possible but manual.
+> Everything else in this ADR — the three repository boundaries, `master` as the
+> integration branch, the layer-attribution rule, public visibility and its discipline —
+> is unchanged.
 - **Date:** 2026-08-27
 - **Deciders:** Repository owner
 - **Supersedes:** nothing
@@ -84,20 +96,28 @@ stay authoritative. The existing `upstream-watch.yml` workflow produces a weekly
 digest. Merge upstream deliberately — after a digest and a green suite — never
 opportunistically mid-slice.
 
-### 6. Identity and branding stay deferred
+### 6. Identity and branding — SUPERSEDED 2026-08-30
 
-The repository is `kanso`. The Xcode scheme, targets, bundle identifiers, and source
-symbols still say `Hermex`/`Kanso`, and `DEVELOPMENT_TEAM` plus
-`com.uzairansar.*` in `Config/Shared.xcconfig` belong to the upstream maintainer.
+**Original decision (no longer in force):** the Xcode scheme, targets, bundle identifiers
+and source symbols would keep upstream's `Hermex`/`HermesMobile` naming, with a code-wide
+rename deferred to Phase 5, because renaming would touch nearly every file and destroy
+mergeability with upstream precisely during Phase 1 — when the fork depended most on
+pulling upstream fixes.
 
-**A code-wide rename is deferred to Phase 5.** Renaming now would touch nearly every
-file and destroy mergeability with upstream precisely during Phase 1, when the fork
-depends most on pulling upstream fixes.
+**What actually happened:** the owner reversed this on 2026-08-30, after Phase 1's five
+P0 entries were resolved and Phase 2's app-side work had landed. The project, scheme, all
+four targets and all four source directories were renamed to `Kanso*`, and the loss of
+practical upstream merging was accepted explicitly. The cost the original decision
+predicted was real but had shrunk: the Phase 1 work that most needed upstream was already
+done.
 
-Signing is overridden locally instead, per `CONTRIBUTING.md`: a gitignored
-`Config/Local.xcconfig` supplies the owner's `DEVELOPMENT_TEAM` and, if provisioning
-requires it, `APP_BUNDLE_IDENTIFIER`. `Config/Shared.xcconfig` and `project.pbxproj` are
-never edited for signing.
+The rename cost far less than feared — because file references are group-relative,
+rewriting four group `path` entries carried all 1172 `.swift` references automatically.
+
+Identity now lives in `Config/Shared.xcconfig` and belongs to the fork:
+`app.kanso` / `group.app.kanso`. Per-machine signing overrides still go in a gitignored
+`Config/Local.xcconfig`, per `CONTRIBUTING.md`; `project.pbxproj` is still never edited
+for signing.
 
 ### 7. Repository visibility
 

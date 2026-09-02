@@ -9,7 +9,7 @@
 
 ## 0. How to use this document
 
-You (the coding agent) are building a native iOS app called **Kanso** in App Store Connect. The Xcode target remains `Kanso`; the iPhone home-screen display name is `Kanso`. You are NOT modifying the upstream `nesquena/hermes-webui` Python server in this project. You are building a separate Swift/SwiftUI iOS application that talks to that server over HTTPS.
+You (the coding agent) are building a native iOS app called **Kanso**. The Xcode project, scheme and target are all `Kanso`, and the iPhone home-screen display name is `Kanso`. You are NOT modifying the upstream `nesquena/hermes-webui` Python server in this project. You are building a separate Swift/SwiftUI iOS application that talks to that server over HTTPS.
 
 Treat each section's checkboxes as your work plan. After every milestone, update the `## Progress log` at the bottom.
 
@@ -67,7 +67,7 @@ The server owns execution. The app owns mobile interaction quality.
 | 7 | Push notifications | **Skip for v1** |
 | 8 | Terminal feature | **Skip for v1** |
 | 9 | Offline behavior | **Read-only cache** of session list and recent messages |
-| 10 | App name | **Kanso** in App Store Connect; iPhone display name **Kanso**; Xcode target remains `Kanso` |
+| 10 | App name | **Kanso** everywhere — App Store Connect, iPhone display name, and the Xcode project/scheme/target |
 | 11 | Apple Developer account | **Enrolled** — Team ID `H55GUGZRDX`; bundle ID `app.kanso`; SKU `hermes-mobile-ios` |
 
 ---

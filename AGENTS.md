@@ -1,11 +1,11 @@
 # AGENTS.md — working agreement for Kanso
 
-Kanso is a native SwiftUI iPhone app for a self-hosted `hermes-webui` server, forked
-from [Hermex](https://github.com/uzairansaruzi/hermex). The Xcode target and scheme are
-still `Kanso` and the source directories still say `Hermes*` — that rename is
-deliberately deferred so upstream merges stay practical (see
-`docs/adr/0001-fork-and-upstream-strategy.md`). "Hermes" refers to the **server**, not
-this app. `PROJECT_SPEC.md` is the
+Kanso is a native SwiftUI iPhone app for a self-hosted `hermes-webui` server, originally
+forked from [Hermex](https://github.com/uzairansaruzi/hermex). Since 2026-08-30 the
+project, scheme, targets and directories are all named `Kanso*`; upstream merging is no
+longer practical and that is accepted (see
+`docs/adr/0001-fork-and-upstream-strategy.md`). **"Hermes" always means the server** —
+`hermes-webui`, the agent, `HERMES_WEBUI_*` — never this app. `PROJECT_SPEC.md` is the
 product/API source of truth — if a request conflicts with it, stop and ask.
 Read by every agent (Codex, Claude Code, …); keep it tool-agnostic.
 

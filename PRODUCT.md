@@ -8,9 +8,9 @@ iPhone client for a self-hosted Hermes agent stack.
 this file wins; where they disagree on API behavior, `PROJECT_SPEC.md` wins. Flag the
 conflict rather than choosing silently.
 
-> **Naming:** the repository is `kanso`; the Xcode scheme, targets, bundle identifiers,
-> and source symbols still say `Hermex`/`Kanso`. That rename is deliberately
-> deferred — see [ADR 0001](docs/adr/0001-fork-and-upstream-strategy.md).
+> **Naming:** fully renamed as of 2026-08-30 — repository, project, scheme, targets,
+> directories and bundle identifiers are all `Kanso`. "Hermes" now refers only to the
+> server. See [ADR 0001](docs/adr/0001-fork-and-upstream-strategy.md).
 
 ## What this is
 

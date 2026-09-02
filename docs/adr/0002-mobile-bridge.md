@@ -122,7 +122,7 @@ server host.
 
 1. **Apple Developer portal** — enable **Push Notifications** on App ID `app.kanso`, then
    create an **APNs Auth Key (.p8)** and record its Key ID and your Team ID
-   (`H55GUGZRDX`). Download the `.p8` once; it cannot be re-downloaded.
+   (`SBKH35KD6S`). Download the `.p8` once; it cannot be re-downloaded.
 2. **Decide where the bridge runs** — same host as `hermes-webui` is simplest; it needs
    network access to the WebUI and outbound TLS to APNs.
 3. **Create the `hermes-mobile-bridge` repo** (private is fine and probably wiser).

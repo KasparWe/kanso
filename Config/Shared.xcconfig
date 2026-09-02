@@ -2,10 +2,10 @@
 // base configuration for both build configurations (Debug and Release).
 //
 // This is the Kanso fork's own app identity: team and bundle IDs belong to the
-// fork owner (Apple team H55GUGZRDX). Per-machine overrides still go in
+// fork owner (Apple team SBKH35KD6S). Per-machine overrides still go in
 // Config/Local.xcconfig (gitignored) — see CONTRIBUTING.md.
 
-DEVELOPMENT_TEAM = H55GUGZRDX
+DEVELOPMENT_TEAM = SBKH35KD6S
 APP_IDENTIFIER_SUFFIX =
 APP_BUNDLE_IDENTIFIER = app.kanso$(APP_IDENTIFIER_SUFFIX)
 APP_GROUP_IDENTIFIER = group.app.kanso$(APP_IDENTIFIER_SUFFIX)

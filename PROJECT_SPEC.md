@@ -68,7 +68,7 @@ The server owns execution. The app owns mobile interaction quality.
 | 8 | Terminal feature | **Skip for v1** |
 | 9 | Offline behavior | **Read-only cache** of session list and recent messages |
 | 10 | App name | **Kanso** everywhere — App Store Connect, iPhone display name, and the Xcode project/scheme/target |
-| 11 | Apple Developer account | **Enrolled** — Team ID `H55GUGZRDX`; bundle ID `app.kanso`; SKU `hermes-mobile-ios` |
+| 11 | Apple Developer account | **Enrolled** — Team ID `SBKH35KD6S`; bundle ID `app.kanso`; SKU `hermes-mobile-ios` |
 
 ---
 
@@ -667,7 +667,7 @@ Each phase ends in a working, committable state. Run on the simulator after ever
 
 ### Phase 13 — TestFlight prep (½ day)
 - [x] **Owner creates Apple Developer account** ($99/yr).
-- [x] Configure signing in Xcode for Team ID `H55GUGZRDX`.
+- [x] Configure signing in Xcode for Team ID `SBKH35KD6S`.
 - [x] Create App Store Connect app record: `Kanso`, bundle ID `app.kanso`, SKU `hermes-mobile-ios`.
 - [x] Answer export compliance: `None of the algorithms mentioned above`; repo declares `ITSAppUsesNonExemptEncryption = NO`.
 - [x] Add internal TestFlight path for the owner first.

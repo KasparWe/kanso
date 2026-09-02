@@ -111,7 +111,7 @@ Preferred implementation:
    - `method = app-store-connect`
    - `destination = upload`
    - `signingStyle = automatic`
-   - `teamID = H55GUGZRDX`
+   - `teamID = SBKH35KD6S`
    - `uploadSymbols = true`
    - no `testFlightInternalTestingOnly` key
 3. Add a separate manual workflow, for example `.github/workflows/external-testflight.yml`, with stronger gates:
@@ -177,8 +177,8 @@ Exit criteria:
 Current local result as of 2026-05-15:
 
 - Local validation passed on `codex/testflight-doc-reconcile`.
-- App target Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso`, and `Kanso/Resources/Kanso.entitlements`.
-- Share extension Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso.shareextension`, and `KansoShareExtension/Resources/KansoShareExtension.entitlements`.
+- App target Release settings use automatic signing, Team ID `SBKH35KD6S`, bundle ID `app.kanso`, and `Kanso/Resources/Kanso.entitlements`.
+- Share extension Release settings use automatic signing, Team ID `SBKH35KD6S`, bundle ID `app.kanso.shareextension`, and `KansoShareExtension/Resources/KansoShareExtension.entitlements`.
 - Both entitlement files include `group.app.kanso`.
 - Owner confirmed the Apple Developer Portal and App Store Connect API key items on 2026-05-15.
 

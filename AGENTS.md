@@ -60,7 +60,7 @@ Read by every agent (Codex, Claude Code, …); keep it tool-agnostic.
   build + launch the app for the human's manual simulator test when UI changed.
 
 ## App identity (resolved via xcconfig — not grep-able)
-Bundle ID `app.kanso` · app group `group.app.kanso` · tests `….tests` · Team `H55GUGZRDX`.
+Bundle ID `app.kanso` · app group `group.app.kanso` · tests `….tests` · Team `SBKH35KD6S`.
 URL scheme `kanso`. Display name `Kanso`. All resolved via `Config/Shared.xcconfig`.
 
 ## "push to branch testflight" (maintainer-only)

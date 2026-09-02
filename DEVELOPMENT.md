@@ -189,7 +189,7 @@ Current status:
 - Bundle ID: `app.kanso`.
 - Test bundle ID: `app.kanso.tests`.
 - SKU: `hermes-mobile-ios`.
-- Apple Developer Team ID: `H55GUGZRDX`.
+- Apple Developer Team ID: `SBKH35KD6S`.
 - Signing uses Xcode automatic signing.
 - Export compliance is declared in `Info.plist` with `ITSAppUsesNonExemptEncryption = NO`; the app does not implement custom/proprietary encryption and uses normal Apple/platform networking security.
 - App icon uses owner-supplied light and dark assets in `AppIcon.appiconset`.
@@ -268,7 +268,7 @@ GitHub Actions internal TestFlight flow:
    - `APP_STORE_CONNECT_KEY_ID`: the App Store Connect API key ID.
    - `APP_STORE_CONNECT_ISSUER_ID`: the App Store Connect issuer ID.
    - `APP_STORE_CONNECT_PRIVATE_KEY`: the full `.p8` private key contents. A one-line value with escaped `\n` separators also works.
-3. Use an App Store Connect team API key with enough access to upload builds and let `xcodebuild -allowProvisioningUpdates` manage automatic signing for Team ID `H55GUGZRDX`. If provisioning fails in CI, check the API key role, Apple Developer agreements, and App Store Connect access before changing the project to manual signing.
+3. Use an App Store Connect team API key with enough access to upload builds and let `xcodebuild -allowProvisioningUpdates` manage automatic signing for Team ID `SBKH35KD6S`. If provisioning fails in CI, check the API key role, Apple Developer agreements, and App Store Connect access before changing the project to manual signing.
 4. Run the `Internal TestFlight` workflow manually from the GitHub Actions tab after the workflow file exists on the default branch.
 5. Select `master` as the workflow ref, set `confirm_internal_only` to `INTERNAL`, and leave `build_number` blank so the workflow selects the next App Store Connect build number for the current marketing version.
 6. The workflow archives the Release build, uploads directly to App Store Connect, and uses `testFlightInternalTestingOnly = true` so uploaded builds cannot be promoted to external TestFlight or App Store distribution.

@@ -87,7 +87,7 @@ opportunistically mid-slice.
 ### 6. Identity and branding stay deferred
 
 The repository is `kanso`. The Xcode scheme, targets, bundle identifiers, and source
-symbols still say `Hermex`/`HermesMobile`, and `DEVELOPMENT_TEAM` plus
+symbols still say `Hermex`/`Kanso`, and `DEVELOPMENT_TEAM` plus
 `com.uzairansar.*` in `Config/Shared.xcconfig` belong to the upstream maintainer.
 
 **A code-wide rename is deferred to Phase 5.** Renaming now would touch nearly every

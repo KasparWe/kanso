@@ -80,16 +80,16 @@ If connection testing fails, check these first:
 
 Kanso is not distributed as a binary — building from source is the only way to install it. You need Xcode 26 or newer (iOS 18 SDK) and an iPhone or simulator on iOS 18+.
 
-Clone the repo, open `HermesMobile.xcodeproj`, and run the `HermesMobile` scheme on an iPhone simulator (the Xcode target is still `HermesMobile`; the app's display name is `Kanso`). Dependencies are resolved automatically via Swift Package Manager.
+Clone the repo, open `Kanso.xcodeproj`, and run the `Kanso` scheme on an iPhone simulator (the Xcode target is still `Kanso`; the app's display name is `Kanso`). Dependencies are resolved automatically via Swift Package Manager.
 
 From the command line:
 
 ```zsh
-xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ```zsh
-xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
 If that simulator is not installed, list available devices and choose a nearby iPhone simulator:

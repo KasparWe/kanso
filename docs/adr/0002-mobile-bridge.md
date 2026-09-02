@@ -33,7 +33,7 @@ Hermes plugin using documented `on_stream_end` / approval / session-lifecycle ho
 | **Approval/clarify SSE are per-session too.** | Both require `session_id`, else `bad(handler, "session_id is required")`. |
 | **No failure signal for runs anywhere.** Not on a session row, not on `/api/session/status`. | `Session.compact()`; `session_status` (`api/session_ops.py:129`). Confirmed live. |
 | **Run liveness *is* trustworthy.** `is_streaming` on `/api/sessions` is a live runtime check. | `all_sessions()` passes `include_runtime=True`; `_is_streaming_session` tests membership in `active_stream_ids`. |
-| **The app is not provisioned for push at all.** No `aps-environment` entitlement; `UIBackgroundModes` is `["audio"]` only — no `remote-notification`. | `HermesMobile/Resources/*.entitlements`, `Info.plist`. |
+| **The app is not provisioned for push at all.** No `aps-environment` entitlement; `UIBackgroundModes` is `["audio"]` only — no `remote-notification`. | `Kanso/Resources/*.entitlements`, `Info.plist`. |
 
 The plan's hook-based design therefore **cannot be built against WebUI**. Any hook-based
 approach would have to live in Hermes Agent (`hermes_cli.plugins`, referenced from

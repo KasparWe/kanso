@@ -129,7 +129,7 @@ Validation:
 plutil -lint ci/ExternalTestFlightExportOptions.plist
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/external-testflight.yml"); puts "YAML OK"'
 rg -n "testFlightInternalTestingOnly|EXTERNAL_REVIEW|external-testflight" ci .github/workflows DEVELOPMENT.md TESTFLIGHT.md
-xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project Kanso.xcodeproj -scheme Kanso -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
 git diff --check
 ```
 
@@ -165,9 +165,9 @@ Owner task in Apple Developer / App Store Connect:
 Local validation:
 
 ```zsh
-plutil -p HermesMobile/Resources/HermesMobile.entitlements
-plutil -p HermesShareExtension/Resources/HermesShareExtension.entitlements
-xcodebuild -showBuildSettings -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release | rg "PRODUCT_BUNDLE_IDENTIFIER|DEVELOPMENT_TEAM|CODE_SIGN_ENTITLEMENTS|CODE_SIGN_STYLE"
+plutil -p Kanso/Resources/Kanso.entitlements
+plutil -p KansoShareExtension/Resources/KansoShareExtension.entitlements
+xcodebuild -showBuildSettings -project Kanso.xcodeproj -scheme Kanso -configuration Release | rg "PRODUCT_BUNDLE_IDENTIFIER|DEVELOPMENT_TEAM|CODE_SIGN_ENTITLEMENTS|CODE_SIGN_STYLE"
 ```
 
 Exit criteria:
@@ -177,8 +177,8 @@ Exit criteria:
 Current local result as of 2026-05-15:
 
 - Local validation passed on `codex/testflight-doc-reconcile`.
-- App target Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso`, and `HermesMobile/Resources/HermesMobile.entitlements`.
-- Share extension Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso.shareextension`, and `HermesShareExtension/Resources/HermesShareExtension.entitlements`.
+- App target Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso`, and `Kanso/Resources/Kanso.entitlements`.
+- Share extension Release settings use automatic signing, Team ID `H55GUGZRDX`, bundle ID `app.kanso.shareextension`, and `KansoShareExtension/Resources/KansoShareExtension.entitlements`.
 - Both entitlement files include `group.app.kanso`.
 - Owner confirmed the Apple Developer Portal and App Store Connect API key items on 2026-05-15.
 
@@ -327,16 +327,16 @@ Commands:
 xcrun simctl list devices available
 git status --short --branch
 git diff --check
-plutil -lint HermesMobile/Resources/Info.plist HermesMobile/Resources/PrivacyInfo.xcprivacy HermesShareExtension/Resources/Info.plist HermesShareExtension/Resources/PrivacyInfo.xcprivacy
-xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'
-xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+plutil -lint Kanso/Resources/Info.plist Kanso/Resources/PrivacyInfo.xcprivacy KansoShareExtension/Resources/Info.plist KansoShareExtension/Resources/PrivacyInfo.xcprivacy
+xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild -project Kanso.xcodeproj -scheme Kanso -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
 ```
 
 If simulator launch is stale:
 
 ```zsh
 xcrun simctl shutdown all
-xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
 Exit criteria:
@@ -353,9 +353,9 @@ Current Step 7 status as of 2026-05-15:
 - iPhone 17 Simulator is available.
 - `git diff --check` passed.
 - plist lint passed for app/share-extension Info.plist and privacy manifests.
-- `xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'` completed with `TEST SUCCEEDED`.
-- XCTest result bundle: `~/Library/Developer/Xcode/DerivedData/HermesMobile-dodyrzzipcxecicrwnfmjwjkqngb/Logs/Test/Test-HermesMobile-2026.05.14_22-45-59--0400.xcresult`.
-- `xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build` completed with `BUILD SUCCEEDED`.
+- `xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'` completed with `TEST SUCCEEDED`.
+- XCTest result bundle: `~/Library/Developer/Xcode/DerivedData/Kanso-dodyrzzipcxecicrwnfmjwjkqngb/Logs/Test/Test-Kanso-2026.05.14_22-45-59--0400.xcresult`.
+- `xcodebuild -project Kanso.xcodeproj -scheme Kanso -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build` completed with `BUILD SUCCEEDED`.
 
 ### 8. Run Live Authenticated Server Smoke
 
@@ -519,7 +519,7 @@ Use the new external-capable workflow or manual Xcode upload. The build must not
 
 Version-train rule (bitten 2026-06-02 with `1.0` → `1.0.1` and 2026-08-04 with `1.4` → `1.5`): once a version is approved for the App Store, Apple closes its pre-release train and rejects any upload with that `CFBundleShortVersionString` (ASC errors 90186/90062). Two defenses:
 
-- Bump `MARKETING_VERSION` (in `HermesMobile.xcodeproj/project.pbxproj`, all entries) on `master` right after each App Store release goes live, so the next upload always targets an open train.
+- Bump `MARKETING_VERSION` (in `Kanso.xcodeproj/project.pbxproj`, all entries) on `master` right after each App Store release goes live, so the next upload always targets an open train.
 - The workflow preflights the train against App Store Connect before archiving (`ENFORCE_OPEN_TRAIN` in `ci/select_testflight_build_number.rb`) and fails in seconds with a bump instruction if the train is closed.
 
 Workflow path, if implemented:
@@ -685,8 +685,8 @@ Before each new external build:
 ```zsh
 git status --short --branch
 git diff --check
-xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'
-xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild -project Kanso.xcodeproj -scheme Kanso -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
 ```
 
 ## App Store Connect Review Notes Template

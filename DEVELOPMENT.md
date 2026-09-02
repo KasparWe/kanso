@@ -98,8 +98,8 @@ lsof -i :8787
 
 XcodeBuildMCP is the preferred local validation path for feature and bug-fix slices. The repo config lives in `.xcodebuildmcp/config.yaml` and sets:
 
-- Project: `HermesMobile.xcodeproj`
-- Scheme: `HermesMobile`
+- Project: `Kanso.xcodeproj`
+- Scheme: `Kanso`
 - Configuration: `Debug`
 - Simulator: `iPhone 17`
 - Bundle ID: `app.kanso`
@@ -116,7 +116,7 @@ After each completed implementation slice:
 Agent/MCP flow:
 
 - Call `session_show_defaults` before the first local build/run/test.
-- If defaults are missing, set project `HermesMobile.xcodeproj`, scheme `HermesMobile`, configuration `Debug`, simulator `iPhone 17`, and bundle ID `app.kanso`.
+- If defaults are missing, set project `Kanso.xcodeproj`, scheme `Kanso`, configuration `Debug`, simulator `iPhone 17`, and bundle ID `app.kanso`.
 - Use `test_sim` for XCTest validation.
 - Use `build_run_sim` to build, install, launch, and open Simulator for manual testing.
 - Use `screenshot`, UI inspection, and log capture only when they help validate the slice.
@@ -151,7 +151,7 @@ Policy:
 
 - Warn on production app Swift files over 500 LOC.
 - Exit successfully even when warnings are present.
-- Scope the check to `HermesMobile/` production app files.
+- Scope the check to `Kanso/` production app files.
 - Exempt tests, generated files, preview files, the share extension, and the live activity widget for now.
 - Use warnings to make future drift visible; do not block current work on known oversized files.
 
@@ -174,7 +174,7 @@ xcrun simctl list devices available
 Build for an available iPhone simulator:
 
 ```zsh
-xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 15' build
+xcodebuild -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 15' build
 ```
 
 If `iPhone 15` is not installed, choose a nearby available iPhone simulator.
@@ -184,7 +184,7 @@ If `iPhone 15` is not installed, choose a nearby available iPhone simulator.
 Current status:
 
 - App Store Connect app name: `Kanso`.
-- Xcode target/scheme name: `HermesMobile`.
+- Xcode target/scheme name: `Kanso`.
 - iPhone home-screen display name: `Kanso`.
 - Bundle ID: `app.kanso`.
 - Test bundle ID: `app.kanso.tests`.
@@ -234,7 +234,7 @@ Steps:
 3. Archive with the reusable branch build config `Config/BranchTestFlight.xcconfig`:
 
    ```zsh
-   xcodebuild -project HermesMobile.xcodeproj -scheme HermesMobile -configuration Release \
+   xcodebuild -project Kanso.xcodeproj -scheme Kanso -configuration Release \
      -destination 'generic/platform=iOS' -archivePath build/HermesAgentBranch.xcarchive \
      -xcconfig Config/BranchTestFlight.xcconfig CURRENT_PROJECT_VERSION=<unique-build-number> \
      archive -allowProvisioningUpdates

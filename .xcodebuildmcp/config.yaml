@@ -3,8 +3,8 @@ enabledWorkflows:
   - simulator
   - ui-automation
 sessionDefaults:
-  projectPath: "./HermesMobile.xcodeproj"
-  scheme: "HermesMobile"
+  projectPath: "./Kanso.xcodeproj"
+  scheme: "Kanso"
   configuration: "Debug"
   simulatorName: "iPhone 17"
   bundleId: "app.kanso"

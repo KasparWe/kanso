@@ -9,7 +9,7 @@
 
 ## 0. How to use this document
 
-You (the coding agent) are building a native iOS app called **Kanso** in App Store Connect. The Xcode target remains `HermesMobile`; the iPhone home-screen display name is `Kanso`. You are NOT modifying the upstream `nesquena/hermes-webui` Python server in this project. You are building a separate Swift/SwiftUI iOS application that talks to that server over HTTPS.
+You (the coding agent) are building a native iOS app called **Kanso** in App Store Connect. The Xcode target remains `Kanso`; the iPhone home-screen display name is `Kanso`. You are NOT modifying the upstream `nesquena/hermes-webui` Python server in this project. You are building a separate Swift/SwiftUI iOS application that talks to that server over HTTPS.
 
 Treat each section's checkboxes as your work plan. After every milestone, update the `## Progress log` at the bottom.
 
@@ -67,7 +67,7 @@ The server owns execution. The app owns mobile interaction quality.
 | 7 | Push notifications | **Skip for v1** |
 | 8 | Terminal feature | **Skip for v1** |
 | 9 | Offline behavior | **Read-only cache** of session list and recent messages |
-| 10 | App name | **Kanso** in App Store Connect; iPhone display name **Kanso**; Xcode target remains `HermesMobile` |
+| 10 | App name | **Kanso** in App Store Connect; iPhone display name **Kanso**; Xcode target remains `Kanso` |
 | 11 | Apple Developer account | **Enrolled** — Team ID `H55GUGZRDX`; bundle ID `app.kanso`; SKU `hermes-mobile-ios` |
 
 ---
@@ -279,8 +279,8 @@ Terminal (`/api/terminal/*`), cron create/edit/delete/run/pause/resume, skills s
 ## 7. App structure (target file layout)
 
 ```
-HermesMobile/
-├── HermesMobileApp.swift              # @main, App scene
+Kanso/
+├── KansoApp.swift              # @main, App scene
 ├── Config/
 │   └── AppConfig.swift                # build constants, log subsystems
 ├── Networking/
@@ -350,7 +350,7 @@ Each phase ends in a working, committable state. Run on the simulator after ever
 
 ### Phase 0 — Setup (½ day)
 - [x] Create new GitHub repo (ask owner for the name; default `hermes-mobile`).
-- [x] Initialize Xcode project: SwiftUI App, iOS 17, Swift 5.9+, name `HermesMobile`, initial placeholder bundle ID later replaced by `app.kanso`.
+- [x] Initialize Xcode project: SwiftUI App, iOS 17, Swift 5.9+, name `Kanso`, initial placeholder bundle ID later replaced by `app.kanso`.
 - [x] Add this `PROJECT_SPEC.md` to the repo root.
 - [x] Add SwiftPM dependencies: LDSwiftEventSource, swift-markdown-ui, Splash, Highlightr, KeychainAccess.
 - [x] Add `.gitignore` (Xcode template), commit.
@@ -842,7 +842,7 @@ UPSTREAM_TESTED_SHA / UPSTREAM_TESTED_TAG / TESTED_AGAINST_VERSION:
   duplicate the values here — they rot.
 APP_VERSION / APP_BUILD:
   read MARKETING_VERSION / CURRENT_PROJECT_VERSION from
-  `HermesMobile.xcodeproj/project.pbxproj`.
+  `Kanso.xcodeproj/project.pbxproj`.
 ```
 
 ---

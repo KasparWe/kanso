@@ -317,5 +317,5 @@ reason is recorded in the same place.
 - `CONTRACT_TESTS.md` → "Endpoint Priority" (the source list this sheet mirrors)
   and "Advance Policy" (the gate + how to advance the pin).
 - Issue #181 — the owner task to run this smoke and advance `UPSTREAM_TESTED_SHA`.
-- `HermesMobile/Networking/Endpoints.swift` — authoritative paths/methods/query
+- `Kanso/Networking/Endpoints.swift` — authoritative paths/methods/query
   params every `curl` above mirrors.

@@ -2,7 +2,7 @@
 
 Kanso is a native SwiftUI iPhone app for a self-hosted `hermes-webui` server, forked
 from [Hermex](https://github.com/uzairansaruzi/hermex). The Xcode target and scheme are
-still `HermesMobile` and the source directories still say `Hermes*` — that rename is
+still `Kanso` and the source directories still say `Hermes*` — that rename is
 deliberately deferred so upstream merges stay practical (see
 `docs/adr/0001-fork-and-upstream-strategy.md`). "Hermes" refers to the **server**, not
 this app. `PROJECT_SPEC.md` is the
@@ -49,7 +49,7 @@ Read by every agent (Codex, Claude Code, …); keep it tool-agnostic.
   ask to open Xcode only when the terminal can't answer.
 - Use **XcodeBuildMCP** for simulator build/test/run/log; fall back to raw
   `xcodebuild`/`xcrun simctl` for release/archive or low-level diagnosis. Defaults live
-  in `.xcodebuildmcp/config.yaml` (scheme `HermesMobile`, sim **iPhone 17**); if that
+  in `.xcodebuildmcp/config.yaml` (scheme `Kanso`, sim **iPhone 17**); if that
   sim is missing, pick a nearby iPhone and say which.
 - **Simulator installs must be signed.** Never install a `CODE_SIGNING_ALLOWED=NO`
   build on the simulator for manual testing — that flag is for compile-only checks

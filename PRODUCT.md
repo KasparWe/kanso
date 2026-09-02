@@ -9,7 +9,7 @@ this file wins; where they disagree on API behavior, `PROJECT_SPEC.md` wins. Fla
 conflict rather than choosing silently.
 
 > **Naming:** the repository is `kanso`; the Xcode scheme, targets, bundle identifiers,
-> and source symbols still say `Hermex`/`HermesMobile`. That rename is deliberately
+> and source symbols still say `Hermex`/`Kanso`. That rename is deliberately
 > deferred — see [ADR 0001](docs/adr/0001-fork-and-upstream-strategy.md).
 
 ## What this is

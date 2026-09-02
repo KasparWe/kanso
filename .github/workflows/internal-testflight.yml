@@ -38,8 +38,8 @@ jobs:
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
       EXPORT_OPTIONS_PLIST: ci/TestFlightExportOptions.plist
-      PROJECT_PATH: HermesMobile.xcodeproj
-      SCHEME: HermesMobile
+      PROJECT_PATH: Kanso.xcodeproj
+      SCHEME: Kanso
       TEAM_ID: 6GYD9C9N6R
 
     steps:
@@ -81,7 +81,7 @@ jobs:
           set -euo pipefail
 
           {
-            echo "ARCHIVE_PATH=${RUNNER_TEMP}/HermesMobile.xcarchive"
+            echo "ARCHIVE_PATH=${RUNNER_TEMP}/Kanso.xcarchive"
             echo "DERIVED_DATA_PATH=${RUNNER_TEMP}/DerivedData"
             echo "EXPORT_PATH=${RUNNER_TEMP}/TestFlightExport"
           } >> "${GITHUB_ENV}"

@@ -8,10 +8,10 @@ read the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 - **Xcode 26 or newer** (the project builds with the iOS 18 SDK or later; the
   deployment target is iOS 18).
-- Clone the repo and open `HermesMobile.xcodeproj`. Dependencies resolve
+- Clone the repo and open `Kanso.xcodeproj`. Dependencies resolve
   automatically via Swift Package Manager — the dependency list is locked in
   `PROJECT_SPEC.md`; do not add new ones without maintainer approval.
-- Build and run the **`HermesMobile`** scheme on an iPhone simulator
+- Build and run the **`Kanso`** scheme on an iPhone simulator
   (`iPhone 17` is the reference device; any recent iPhone simulator works).
 - To actually use the app you need your own
   [hermes-webui](https://github.com/nesquena/hermes-webui) server — the app is
@@ -24,7 +24,7 @@ read the [Code of Conduct](CODE_OF_CONDUCT.md).
 The full XCTest suite is the repo's green bar — it must pass before any PR:
 
 ```zsh
-xcodebuild test -project HermesMobile.xcodeproj -scheme HermesMobile -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Kanso.xcodeproj -scheme Kanso -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
 If that simulator name isn't installed, pick a nearby iPhone from

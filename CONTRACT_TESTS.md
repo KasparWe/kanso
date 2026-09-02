@@ -52,7 +52,7 @@ time the owner runs a green smoke.
 This slice adds lightweight readiness coverage, not the full Docker-backed CI contract target from `PROJECT_SPEC.md`.
 
 Implemented now:
-- `HermesMobileTests/APIClientTests.swift` contains a contract-readiness matrix for every app-used `Endpoint` case.
+- `KansoTests/APIClientTests.swift` contains a contract-readiness matrix for every app-used `Endpoint` case.
 - The matrix asserts HTTP method intent, path, and query parameters for health, auth, sessions, destructive session actions, streaming, uploads, workspaces/files, models/providers/profiles/reasoning, slash-command endpoints, read-only server panels, skills, memory, and analytics source endpoints.
 - Focused request tests assert native POST calls do not send `Origin` or `Referer`, preserving the upstream CSRF contract for non-browser clients.
 - Multipart upload request tests also assert no `Origin` or `Referer`.
